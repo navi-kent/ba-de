@@ -122,8 +122,7 @@ Ba-de/
 │   └── wish.html            # 許願池頁面（純靜態 HTML）
 │
 ├── config/
-│   ├── search_config.yaml   # 監控地區 + 搜尋關鍵字（最常修改）
-│   └── sources.yaml         # RSS 來源備用清單（目前未使用）
+│   └── search_config.yaml   # 監控地區 + 搜尋關鍵字（最常修改）
 │
 ├── db/
 │   ├── init_db.py           # 初始化資料庫（重複執行安全）

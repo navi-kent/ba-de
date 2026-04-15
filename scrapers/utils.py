@@ -6,7 +6,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).parent.parent
-CONFIG_PATH = BASE_DIR / "config" / "sources.yaml"
 SEARCH_CONFIG_PATH = BASE_DIR / "config" / "search_config.yaml"
 
 load_dotenv(BASE_DIR / ".env")
@@ -24,14 +23,6 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor,
         autocommit=False,
     )
-
-
-def load_config():
-    """讀取 YAML 設定檔 (舊的 sources.yaml)"""
-    if not CONFIG_PATH.exists():
-        return {"sources": []}
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
 
 
 def load_search_config():
