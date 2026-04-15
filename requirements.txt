@@ -1,0 +1,10 @@
+flask
+gunicorn
+pymysql
+cryptography
+python-dotenv
+feedparser
+pyyaml
+requests
+beautifulsoup4
+python-dateutil

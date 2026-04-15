@@ -1,0 +1,22 @@
+# 環境設定（含密碼，絕對不能上傳）
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# macOS
+.DS_Store
+
+# Log
+logs/
+*.log
+
+# 編輯器
+.vscode/
+.idea/
+*.swp

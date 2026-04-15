@@ -1,0 +1,8 @@
+# 監控管道清單
+sources:
+  - name: "Google News - Politics"
+    url: "https://news.google.com/rss?hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
+    type: "rss"
+  - name: "Other Source"
+    url: "https://example.com/rss"
+    type: "rss"
