@@ -5,7 +5,6 @@ import json
 import requests
 import urllib3
 import xml.etree.ElementTree as ET
-import pymysql
 from urllib.parse import urljoin
 from utils import get_db_connection, load_search_config, log_run_start, log_run_finish
 
@@ -54,27 +53,25 @@ def parse_opendata_xml(xml_content: str, base_url: str) -> list:
 
 
 def insert_post(conn, post: dict, source_name: str) -> bool:
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                """INSERT INTO raw_posts
-                   (source, source_account, post_id, title, content,
-                    url, published_at, raw_json)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                (
-                    "gov",
-                    source_name,
-                    post["url"],
-                    post.get("title"),
-                    post.get("content", ""),
-                    post["url"],
-                    post.get("published_at"),
-                    json.dumps(post, ensure_ascii=False),
-                ),
-            )
-        return True
-    except pymysql.IntegrityError:
-        return False
+    with conn.cursor() as cur:
+        cur.execute(
+            """INSERT INTO raw_posts
+               (source, source_account, post_id, title, content,
+                url, published_at, raw_json)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+               ON CONFLICT (source, post_id) DO NOTHING""",
+            (
+                "gov",
+                source_name,
+                post["url"],
+                post.get("title"),
+                post.get("content", ""),
+                post["url"],
+                post.get("published_at"),
+                json.dumps(post, ensure_ascii=False),
+            ),
+        )
+    return cur.rowcount == 1
 
 
 def run():

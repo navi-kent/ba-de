@@ -4,7 +4,6 @@
 import json
 import time
 import requests
-import pymysql
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, parse_qs, urlparse
 from utils import get_db_connection, load_search_config, log_run_start, log_run_finish
@@ -55,24 +54,22 @@ def fetch_page_posts(page_id: str, page_name: str) -> list:
 
 
 def insert_post(conn, post: dict) -> bool:
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                """INSERT INTO raw_posts
-                   (source, source_account, post_id, content, url, raw_json)
-                   VALUES (%s, %s, %s, %s, %s, %s)""",
-                (
-                    "fb",
-                    post["page_name"],
-                    post["post_id"],
-                    post.get("content", ""),
-                    post["url"],
-                    json.dumps(post, ensure_ascii=False),
-                ),
-            )
-        return True
-    except pymysql.IntegrityError:
-        return False
+    with conn.cursor() as cur:
+        cur.execute(
+            """INSERT INTO raw_posts
+               (source, source_account, post_id, content, url, raw_json)
+               VALUES (%s, %s, %s, %s, %s, %s)
+               ON CONFLICT (source, post_id) DO NOTHING""",
+            (
+                "fb",
+                post["page_name"],
+                post["post_id"],
+                post.get("content", ""),
+                post["url"],
+                json.dumps(post, ensure_ascii=False),
+            ),
+        )
+    return cur.rowcount == 1
 
 
 def run():

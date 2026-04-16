@@ -4,7 +4,6 @@
 import json
 import yaml
 import feedparser
-import pymysql
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
@@ -51,28 +50,26 @@ def insert_post(conn, entry, keyword) -> bool:
     except Exception:
         published = None
 
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                """INSERT INTO raw_posts
-                   (source, source_account, post_id, author, title, content,
-                    url, published_at, raw_json)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                (
-                    "news",
-                    keyword,
-                    post_id,
-                    entry.get("source", {}).get("title") if isinstance(entry.get("source"), dict) else None,
-                    entry.get("title"),
-                    entry.get("summary", ""),
-                    entry.get("link"),
-                    published,
-                    json.dumps(dict(entry), default=str, ensure_ascii=False),
-                ),
-            )
-        return True
-    except pymysql.IntegrityError:
-        return False
+    with conn.cursor() as cur:
+        cur.execute(
+            """INSERT INTO raw_posts
+               (source, source_account, post_id, author, title, content,
+                url, published_at, raw_json)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+               ON CONFLICT (source, post_id) DO NOTHING""",
+            (
+                "news",
+                keyword,
+                post_id,
+                entry.get("source", {}).get("title") if isinstance(entry.get("source"), dict) else None,
+                entry.get("title"),
+                entry.get("summary", ""),
+                entry.get("link"),
+                published,
+                json.dumps(dict(entry), default=str, ensure_ascii=False),
+            ),
+        )
+    return cur.rowcount == 1
 
 
 def run():

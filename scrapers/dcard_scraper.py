@@ -4,7 +4,6 @@
 import json
 import time
 import requests
-import pymysql
 from pathlib import Path
 from utils import get_db_connection, load_search_config, log_run_start, log_run_finish
 
@@ -49,30 +48,28 @@ def fetch_post_detail(post_id: int) -> dict:
 
 
 def insert_post(conn, post: dict, forum: str) -> bool:
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                """INSERT INTO raw_posts
-                   (source, source_account, post_id, author, title, content,
-                    url, published_at, likes, comments, raw_json)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                (
-                    "dcard",
-                    forum,
-                    str(post["id"]),
-                    post.get("school"),
-                    post.get("title"),
-                    post.get("content", ""),
-                    f"https://www.dcard.tw/f/{forum}/p/{post['id']}",
-                    post.get("createdAt"),
-                    post.get("likeCount", 0),
-                    post.get("commentCount", 0),
-                    json.dumps(post, ensure_ascii=False),
-                ),
-            )
-        return True
-    except pymysql.IntegrityError:
-        return False
+    with conn.cursor() as cur:
+        cur.execute(
+            """INSERT INTO raw_posts
+               (source, source_account, post_id, author, title, content,
+                url, published_at, likes, comments, raw_json)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+               ON CONFLICT (source, post_id) DO NOTHING""",
+            (
+                "dcard",
+                forum,
+                str(post["id"]),
+                post.get("school"),
+                post.get("title"),
+                post.get("content", ""),
+                f"https://www.dcard.tw/f/{forum}/p/{post['id']}",
+                post.get("createdAt"),
+                post.get("likeCount", 0),
+                post.get("commentCount", 0),
+                json.dumps(post, ensure_ascii=False),
+            ),
+        )
+    return cur.rowcount == 1
 
 
 def run():

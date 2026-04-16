@@ -4,7 +4,6 @@
 import json
 import time
 import requests
-import pymysql
 from datetime import datetime
 from pathlib import Path
 from bs4 import BeautifulSoup
@@ -118,28 +117,26 @@ def parse_post_content(session, url: str) -> dict:
 
 
 def insert_post(conn, post: dict, board: str) -> bool:
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                """INSERT INTO raw_posts
-                   (source, source_account, post_id, author, title, content,
-                    url, published_at, raw_json)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                (
-                    "ptt",
-                    board,
-                    post["url"],
-                    post.get("author"),
-                    post.get("title"),
-                    post.get("content", ""),
-                    post["url"],
-                    post.get("published_at"),
-                    json.dumps(post, ensure_ascii=False),
-                ),
-            )
-        return True
-    except pymysql.IntegrityError:
-        return False
+    with conn.cursor() as cur:
+        cur.execute(
+            """INSERT INTO raw_posts
+               (source, source_account, post_id, author, title, content,
+                url, published_at, raw_json)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+               ON CONFLICT (source, post_id) DO NOTHING""",
+            (
+                "ptt",
+                board,
+                post["url"],
+                post.get("author"),
+                post.get("title"),
+                post.get("content", ""),
+                post["url"],
+                post.get("published_at"),
+                json.dumps(post, ensure_ascii=False),
+            ),
+        )
+    return cur.rowcount == 1
 
 
 def run():

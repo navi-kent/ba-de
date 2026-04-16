@@ -1,7 +1,6 @@
 flask
 gunicorn
-pymysql
-cryptography
+psycopg2-binary
 python-dotenv
 feedparser
 pyyaml

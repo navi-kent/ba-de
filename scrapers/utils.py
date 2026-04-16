@@ -1,6 +1,6 @@
 import os
-import pymysql
-import pymysql.cursors
+import psycopg2
+import psycopg2.extras
 import yaml
 from pathlib import Path
 from dotenv import load_dotenv
@@ -12,16 +12,14 @@ load_dotenv(BASE_DIR / ".env")
 
 
 def get_db_connection():
-    """建立 MySQL 資料庫連線"""
-    return pymysql.connect(
-        host=os.environ.get("MYSQL_HOST", "127.0.0.1"),
-        port=int(os.environ.get("MYSQL_PORT", 3306)),
-        user=os.environ.get("MYSQL_USER", "root"),
-        password=os.environ.get("MYSQL_PASSWORD", ""),
-        database=os.environ.get("MYSQL_DATABASE", "bade"),
-        charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor,
-        autocommit=False,
+    """建立 PostgreSQL 資料庫連線"""
+    return psycopg2.connect(
+        host=os.environ.get("PG_HOST", "127.0.0.1"),
+        port=int(os.environ.get("PG_PORT", 5432)),
+        user=os.environ.get("PG_USER", "bade_user"),
+        password=os.environ.get("PG_PASSWORD", ""),
+        dbname=os.environ.get("PG_DATABASE", "bade"),
+        cursor_factory=psycopg2.extras.RealDictCursor,
     )
 
 
@@ -37,10 +35,10 @@ def log_run_start(conn, scraper_name: str) -> int:
     """記錄爬蟲開始執行，回傳 run_id"""
     with conn.cursor() as cur:
         cur.execute(
-            "INSERT INTO scraper_runs (scraper_name, status) VALUES (%s, %s)",
+            "INSERT INTO scraper_runs (scraper_name, status) VALUES (%s, %s) RETURNING id",
             (scraper_name, "running"),
         )
-        run_id = cur.lastrowid
+        run_id = cur.fetchone()["id"]
     conn.commit()
     return run_id
 

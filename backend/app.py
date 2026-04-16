@@ -2,8 +2,8 @@
 使用方式：python backend/app.py
 """
 import os
-import pymysql
-import pymysql.cursors
+import psycopg2
+import psycopg2.extras
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -34,15 +34,13 @@ SOURCE_LABELS = {
 
 
 def get_conn():
-    return pymysql.connect(
-        host=os.environ.get("MYSQL_HOST", "127.0.0.1"),
-        port=int(os.environ.get("MYSQL_PORT", 3306)),
-        user=os.environ.get("MYSQL_USER", "root"),
-        password=os.environ.get("MYSQL_PASSWORD", ""),
-        database=os.environ.get("MYSQL_DATABASE", "bade"),
-        charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor,
-        autocommit=False,
+    return psycopg2.connect(
+        host=os.environ.get("PG_HOST", "127.0.0.1"),
+        port=int(os.environ.get("PG_PORT", 5432)),
+        user=os.environ.get("PG_USER", "bade_user"),
+        password=os.environ.get("PG_PASSWORD", ""),
+        dbname=os.environ.get("PG_DATABASE", "bade"),
+        cursor_factory=psycopg2.extras.RealDictCursor,
     )
 
 
@@ -119,7 +117,7 @@ def api_stats():
             cur.execute("SELECT COUNT(*) as cnt FROM raw_posts")
             total = cur.fetchone()["cnt"]
 
-            cur.execute("SELECT COUNT(*) as cnt FROM raw_posts WHERE DATE(scraped_at) = CURDATE()")
+            cur.execute("SELECT COUNT(*) as cnt FROM raw_posts WHERE scraped_at::date = CURRENT_DATE")
             today = cur.fetchone()["cnt"]
 
             cur.execute(
@@ -136,7 +134,7 @@ def api_stats():
             topics = cur.fetchall()
 
             cur.execute(
-                "SELECT DATE_FORMAT(MAX(scraped_at), '%Y-%m-%d %H:%i') as last_updated FROM raw_posts"
+                "SELECT TO_CHAR(MAX(scraped_at), 'YYYY-MM-DD HH24:MI') as last_updated FROM raw_posts"
             )
             last_updated = cur.fetchone()["last_updated"]
 
@@ -178,7 +176,7 @@ def api_posts():
             params.extend([f"%{q}%", f"%{q}%"])
 
         if month != "all":
-            where_clauses.append("DATE_FORMAT(published_at, '%%Y-%%m') = %s")
+            where_clauses.append("TO_CHAR(published_at, 'YYYY-MM') = %s")
             params.append(month)
 
         if topic != "all":
