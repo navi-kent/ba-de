@@ -74,11 +74,8 @@ CREATE INDEX IF NOT EXISTS idx_announcements_pub ON announcements(published_at D
 -- 訪客計數器
 CREATE TABLE IF NOT EXISTS visitors (
     id         SERIAL PRIMARY KEY,
-    ip         INET,
     visited_at TIMESTAMPTZ DEFAULT NOW()
 );
--- 同一 IP 當天只計算一次（用 expression index 取出 date 部分）
-CREATE UNIQUE INDEX IF NOT EXISTS idx_visitors_ip_date ON visitors (ip, (visited_at::date));
 
 
 -- 許願池留言

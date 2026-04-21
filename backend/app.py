@@ -345,19 +345,10 @@ VISITOR_BASE = 999  # 顯示數字 = COUNT(*) + VISITOR_BASE，讓計數從 1000
 
 @app.route("/api/visit", methods=["POST"])
 def api_visit():
-    """記錄一次訪問並回傳當前累計訪客數（含 base）。
-
-    同一 IP 當天只計算一次（UNIQUE index 去重）。
-    """
-    ip = request.remote_addr
     conn = get_conn()
     try:
         with conn.cursor() as cur:
-            # ON CONFLICT DO NOTHING：同一 IP 當天已記錄過就忽略，不拋例外
-            cur.execute(
-                "INSERT INTO visitors (ip) VALUES (%s::INET) ON CONFLICT DO NOTHING",
-                (ip,),
-            )
+            cur.execute("INSERT INTO visitors DEFAULT VALUES")
             conn.commit()
             cur.execute("SELECT COUNT(*) as cnt FROM visitors")
             total = cur.fetchone()["cnt"] + VISITOR_BASE
