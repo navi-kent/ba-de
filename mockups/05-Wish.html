@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>許願池 — 八德夢想家</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+:root{--bg:#0b0f19;--cb:rgba(22,27,34,.65);--bd:rgba(255,255,255,.08);--p:#3b82f6;--pd:#2563eb;--pl:#60a5fa;--pg:rgba(59,130,246,.4);--gn:#34d399;--ro:#fb7185;--yw:#fbbf24;--t1:#f8fafc;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--r:10px;--rl:16px;--f:"Inter","Noto Sans TC",-apple-system,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at top right,rgba(59,130,246,.1),transparent 40%),radial-gradient(circle at bottom left,rgba(16,185,129,.05),transparent 40%);background-attachment:fixed;color:#e2e8f0;font-family:var(--f);font-size:16px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+.navbar{background:rgba(11,15,25,.82)!important;backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:.75rem 0}
+.navbar-brand{font-weight:800;font-size:1.1rem;background:linear-gradient(135deg,#60a5fa,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-back{color:var(--t2);text-decoration:none;font-size:.87rem;font-weight:500;padding:.36rem .82rem;border-radius:999px;border:1px solid var(--bd);transition:all .15s;display:inline-flex;align-items:center;gap:.4rem}
+.btn-back:hover{color:var(--t1);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04)}
+.gc{background:var(--cb);backdrop-filter:blur(12px);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:0 8px 32px rgba(0,0,0,.2)}
+/* Form */
+.form-ctrl{width:100%;background:rgba(15,23,42,.6);border:1px solid var(--bd);color:#e2e8f0;border-radius:var(--r);padding:.55rem .9rem;font-size:.9rem;outline:none;transition:all .2s;font-family:var(--f)}
+.form-ctrl:focus{background:rgba(15,23,42,.88);border-color:var(--p);box-shadow:0 0 0 3px rgba(59,130,246,.2);color:#fff}
+.form-ctrl::placeholder{color:var(--t4)}
+.form-ctrl.err{border-color:rgba(251,113,133,.55);box-shadow:0 0 0 3px rgba(251,113,133,.12)}
+.form-ctrl.ok{border-color:rgba(52,211,153,.5);box-shadow:0 0 0 3px rgba(52,211,153,.1)}
+textarea.form-ctrl{resize:vertical;min-height:160px}
+.flabel{display:block;font-size:.88rem;color:var(--t2);font-weight:500;margin-bottom:.4rem}
+.fhint{font-size:.78rem;margin-top:4px}
+/* Btn submit */
+.btn-sub{background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;border-radius:12px;padding:.72rem 2.5rem;font-weight:600;font-size:1rem;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(59,130,246,.3);transition:all .2s;font-family:var(--f);width:100%}
+.btn-sub:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 22px rgba(59,130,246,.45)}
+.btn-sub:disabled{opacity:.6;cursor:not-allowed;transform:none}
+/* Notice box */
+.notice{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:1rem 1.2rem;font-size:.875rem;color:#93c5fd;margin-bottom:1.5rem}
+/* Char count */
+.cc{font-size:.76rem;color:var(--t4);text-align:right;margin-top:3px;transition:color .2s}
+.cc.w{color:var(--yw)}.cc.d{color:var(--ro)}
+/* Result box */
+.rb{display:none;padding:1rem;border-radius:12px;text-align:center;font-weight:500;margin-bottom:1rem;font-size:.9rem}
+/* Email validation flow visual */
+.ev-step{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ev-pill{font-size:.72rem;font-weight:600;padding:.2rem .6rem;border-radius:6px;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav class="navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="01-Homepage.html"><i class="fa-solid fa-tower-broadcast" style="-webkit-text-fill-color:#60a5fa"></i>八德夢想家</a>
+    <a href="01-Homepage.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i>返回首頁</a>
+  </div>
+</nav>
+
+<div class="container mt-5 pt-2" style="max-width:640px">
+
+  <!-- Hero -->
+  <div class="text-center mb-5">
+    <div style="font-size:3.5rem;line-height:1;margin-bottom:1rem">
+      <i class="fa-solid fa-wand-magic-sparkles" style="background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text"></i>
+    </div>
+    <h2 class="fw-bold mb-2" style="font-size:1.8rem;letter-spacing:-.2px">許願池</h2>
+    <p class="text-secondary" style="font-size:.95rem">告訴我們你希望這個平台新增什麼功能，<br>或者有什麼地方可以做得更好。</p>
+  </div>
+
+  <!-- Notice -->
+  <div class="notice">
+    <i class="fa-solid fa-lock me-2"></i>
+    你填寫的內容<strong>只有管理員看得到</strong>，不會公開顯示給其他用戶。
+  </div>
+
+  <!-- Result box (success state preview) -->
+  <div id="rb-ok" class="rb" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#6ee7b7">
+    <i class="fa-solid fa-circle-check me-2"></i>許願已送出！感謝你的回饋，我們會認真考慮。
+  </div>
+  <div id="rb-err" class="rb" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5">
+    <i class="fa-solid fa-triangle-exclamation me-2"></i>送出失敗，請稍後再試。
+  </div>
+
+  <!-- §4.3.5 Wish Form + Email Validation -->
+  <div class="gc p-4 p-md-5">
+    <form id="wish-form" novalidate onsubmit="submitWish(event)">
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="flabel">暱稱 <span style="color:var(--t3);font-weight:400">（選填）</span></label>
+          <input type="text" id="name" class="form-ctrl" placeholder="怎麼稱呼你？" maxlength="50">
+        </div>
+        <div class="col-md-6">
+          <label class="flabel">聯絡方式 <span style="color:var(--t3);font-weight:400">（選填）</span></label>
+          <input type="text" id="contact" class="form-ctrl" placeholder="Email 或 LINE ID" maxlength="100" oninput="validateContact(this)">
+          <div id="contact-hint" class="fhint" style="display:none"></div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="flabel">許願內容 <span style="color:var(--ro)">*</span></label>
+        <textarea id="content" class="form-ctrl" placeholder="例如：希望可以加入活動行事曆，讓居民知道最近有什麼社區活動..." maxlength="1000" oninput="updCC(this)"></textarea>
+        <div class="cc" id="cc">0 / 1000</div>
+        <div id="content-err" style="display:none;font-size:.78rem;color:var(--ro);margin-top:3px"><i class="fa-solid fa-circle-exclamation me-1"></i>請填寫許願內容</div>
+      </div>
+
+      <button type="submit" class="btn-sub" id="btn-sub">
+        <i class="fa-solid fa-paper-plane"></i>送出許願
+      </button>
+
+    </form>
+  </div>
+
+  <!-- Email validation flow diagram -->
+  <div style="margin-top:2rem;padding:1.2rem 1.5rem;background:rgba(22,27,34,.4);border:1px solid var(--bd);border-radius:12px">
+    <div style="font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);margin-bottom:12px">§4.3.5 · Email / 聯絡方式驗證流程</div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <div class="ev-step"><div class="ev-pill" style="background:rgba(30,41,59,.8);color:var(--t3);border:1px solid var(--bd)">空白</div></div>
+      <i class="fa-solid fa-arrow-right" style="font-size:.65rem;color:var(--t4)"></i>
+      <div class="ev-step"><div class="ev-pill" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.3)">輸入中（無驗證）</div></div>
+      <i class="fa-solid fa-arrow-right" style="font-size:.65rem;color:var(--t4)"></i>
+      <div class="ev-step"><div class="ev-pill" style="background:rgba(251,113,133,.1);color:#fb7185;border:1px solid rgba(251,113,133,.35)">格式錯誤</div><div style="font-size:.68rem;color:var(--t4);margin-top:2px">紅色邊框提示</div></div>
+      <i class="fa-solid fa-arrow-right" style="font-size:.65rem;color:var(--t4)"></i>
+      <div class="ev-step"><div class="ev-pill" style="background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.35)">格式正確</div><div style="font-size:.68rem;color:var(--t4);margin-top:2px">綠色邊框確認</div></div>
+      <i class="fa-solid fa-arrow-right" style="font-size:.65rem;color:var(--t4)"></i>
+      <div class="ev-step"><div class="ev-pill" style="background:rgba(52,211,153,.15);color:#6ee7b7;border:1px solid rgba(52,211,153,.3)">✓ 送出成功</div></div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div style="margin-top:1.5rem;text-align:center;padding-bottom:2rem">
+    <p class="text-secondary" style="font-size:.84rem">有更緊急的事情嗎？<a href="#" style="color:var(--pl);text-decoration:none">聯絡我們 →</a></p>
+  </div>
+
+</div>
+
+<script>
+function updCC(el){
+  const n=el.value.length,c=document.getElementById('cc');
+  c.textContent=n+' / 1000';
+  c.className='cc'+(n>900?' d':n>700?' w':'');
+}
+
+function validateContact(el){
+  const v=el.value.trim();
+  const hint=document.getElementById('contact-hint');
+  if(!v){el.className='form-ctrl';hint.style.display='none';return}
+  const isEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const isLine=v.length>=3;
+  if(v.includes('@')&&!isEmail){
+    el.className='form-ctrl err';
+    hint.style.display='block';
+    hint.innerHTML='<span style="color:var(--ro)"><i class="fa-solid fa-circle-exclamation me-1"></i>請輸入有效的 Email 地址</span>';
+  } else if(isEmail||(!v.includes('@')&&isLine)){
+    el.className='form-ctrl ok';
+    hint.style.display='block';
+    hint.innerHTML='<span style="color:#34d399"><i class="fa-solid fa-circle-check me-1"></i>格式正確</span>';
+  } else {
+    el.className='form-ctrl';hint.style.display='none';
+  }
+}
+
+function submitWish(e){
+  e.preventDefault();
+  const content=document.getElementById('content').value.trim();
+  const btn=document.getElementById('btn-sub');
+  document.getElementById('content-err').style.display='none';
+  document.getElementById('rb-ok').style.display='none';
+  document.getElementById('rb-err').style.display='none';
+
+  if(!content){
+    document.getElementById('content').classList.add('err');
+    document.getElementById('content-err').style.display='block';
+    document.getElementById('content').focus();
+    return;
+  }
+  document.getElementById('content').classList.remove('err');
+
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>送出中...';
+
+  // Simulate API call
+  setTimeout(()=>{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i>送出許願';
+    document.getElementById('rb-ok').style.display='block';
+    document.getElementById('wish-form').reset();
+    document.getElementById('cc').textContent='0 / 1000';
+    document.getElementById('cc').className='cc';
+    document.getElementById('contact').className='form-ctrl';
+    document.getElementById('contact-hint').style.display='none';
+    window.scrollTo({top:0,behavior:'smooth'});
+  },1400);
+}
+</script>
+</body>
+</html>

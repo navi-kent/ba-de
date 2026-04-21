@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>首頁 — 八德夢想家</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+:root{--bg:#0b0f19;--cb:rgba(22,27,34,.65);--bd:rgba(255,255,255,.08);--p:#3b82f6;--pd:#2563eb;--pl:#60a5fa;--pg:rgba(59,130,246,.4);--cy:#22d3ee;--gn:#34d399;--yw:#fbbf24;--ln:#06C755;--t1:#f8fafc;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--r:8px;--rm:12px;--rl:16px;--f:"Inter","Noto Sans TC",-apple-system,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20% -10%,rgba(59,130,246,.13),transparent 60%),radial-gradient(ellipse 60% 40% at 80% 5%,rgba(52,211,153,.06),transparent 50%);background-attachment:fixed;color:#e2e8f0;font-family:var(--f);font-size:16px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
+.navbar{background:rgba(11,15,25,.82)!important;backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:.75rem 0}
+.navbar-brand{font-weight:800;font-size:1.15rem;background:linear-gradient(135deg,#60a5fa,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.2px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.nlp{color:var(--t2);text-decoration:none;font-size:.88rem;font-weight:500;padding:.38rem .85rem;border-radius:999px;border:1px solid transparent;transition:all .15s;display:inline-flex;align-items:center;gap:.3rem}
+.nlp:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+.nlp.on{color:var(--pl);background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3)}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-bar{background:linear-gradient(90deg,rgba(15,23,42,.98),rgba(11,15,25,.98));border-bottom:1px solid rgba(59,130,246,.2);height:42px;overflow:hidden;display:flex;align-items:center}
+.ticker-lbl{flex-shrink:0;background:var(--p);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.25rem .8rem;border-radius:0 6px 6px 0;white-space:nowrap}
+.ticker-wrap{flex:1;overflow:hidden;position:relative}
+.ticker-track{display:flex;align-items:center;height:42px;white-space:nowrap;animation:tk 40s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.ti{display:inline-flex;align-items:center;font-size:.84rem;color:#cbd5e1;padding:0 1.5rem;gap:.5rem;text-decoration:none;transition:color .15s}
+.ti:hover{color:var(--pl)}
+.hero{padding:4rem 0 2.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(59,130,246,.18) 0%,rgba(52,211,153,.07) 40%,transparent 70%);pointer-events:none;animation:hg 8s ease-in-out infinite alternate}
+@keyframes hg{0%{opacity:.6;transform:translateX(-50%) scale(1)}100%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.hero-title{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-1px;line-height:1.15;background:linear-gradient(135deg,#60a5fa,#22d3ee 40%,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
+.hero-sub{color:var(--t2);font-size:1.05rem;margin-top:.7rem;position:relative;z-index:1}
+.vc-pill{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.2rem;background:rgba(15,23,42,.7);border:1px solid rgba(59,130,246,.25);border-radius:30px;padding:.45rem 1.2rem;font-size:.88rem;color:var(--t3)}
+.gc{background:var(--cb);backdrop-filter:blur(12px);border:1px solid var(--bd);border-radius:var(--rl);transition:all .25s}
+.gc:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.35),0 0 20px rgba(59,130,246,.18);border-color:rgba(255,255,255,.16)}
+.sc{padding:1.8rem;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#3b82f6,#22d3ee,#34d399);opacity:0;transition:opacity .25s}
+.gc:hover .sc::before{opacity:1}
+.sc-icon{font-size:2rem;margin-bottom:.7rem;background:linear-gradient(135deg,#60a5fa,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transition:all .25s}
+.gc:hover .sc-icon{transform:scale(1.08)}
+.sc-num{font-size:2.4rem;font-weight:800;color:var(--t1);letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1.2}
+.nc{background:var(--cb);border:1px solid var(--bd);border-radius:var(--rm);overflow:hidden;display:flex;flex-direction:column;height:100%;transition:all .25s}
+.nc:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.4),0 0 20px rgba(59,130,246,.2);border-color:rgba(59,130,246,.4)}
+.nc-img{width:100%;height:180px;background:linear-gradient(135deg,rgba(30,41,59,.9),rgba(15,23,42,.9));display:flex;align-items:center;justify-content:center;transition:background .25s;overflow:hidden}
+.nc-body{padding:1.15rem;display:flex;flex-direction:column;flex:1}
+.cat-badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.22rem .65rem;border-radius:6px;background:rgba(59,130,246,.15);color:var(--pl);border:1px solid rgba(59,130,246,.3);text-transform:uppercase;letter-spacing:.5px}
+.nc-title{font-size:.97rem;font-weight:600;color:var(--t1);line-height:1.55;margin:.5rem 0 .4rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none;transition:color .15s}
+.nc-title:hover{color:var(--pl)}
+.nc-sum{font-size:.83rem;color:var(--t3);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1;margin-bottom:.4rem}
+.nc-foot{margin-top:auto;padding-top:.75rem;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.nc-date{font-size:.76rem;color:var(--t4)}
+.nc-link{font-size:.78rem;color:var(--p);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;transition:all .15s}
+.nc-link:hover{color:var(--pl);gap:.5rem}
+.btn-p{background:var(--p);color:#fff;border:none;padding:.55rem 1.3rem;border-radius:var(--r);font-weight:600;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:all .15s;text-decoration:none;font-family:var(--f)}
+.btn-p:hover{background:var(--pd);color:#fff;transform:translateY(-2px);box-shadow:0 4px 15px var(--pg)}
+.btn-o{background:transparent;color:var(--t2);border:1px solid rgba(255,255,255,.15);padding:.55rem 1.3rem;border-radius:var(--r);font-weight:500;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:all .15s;text-decoration:none;font-family:var(--f)}
+.btn-o:hover{color:var(--t1);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.04)}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.sh-t{font-size:1.1rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:10px}
+.sh-t::before{content:'';display:inline-block;width:4px;height:20px;border-radius:2px}
+.cta-card{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- §4.3.1 Ticker Bar -->
+<div class="ticker-bar">
+  <span class="ticker-lbl"><i class="fa-solid fa-rss me-1"></i>即時</span>
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>八德區捷運綠線工程最新進度：預計2026年下半年完工通車</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>霄裡地區水資源保護計畫公聽會將於5月舉行，歡迎居民踴躍參加</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>大湳市場整修工程完工，即日起恢復正常營業時間</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>八德擴大都市計畫環評通過，綠地面積提升20%</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>桃園市政府宣布八德區停車場擴建計畫，預計新增500個車位</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>八德區捷運綠線工程最新進度：預計2026年下半年完工通車</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>霄裡地區水資源保護計畫公聽會將於5月舉行，歡迎居民踴躍參加</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>大湳市場整修工程完工，即日起恢復正常營業時間</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>八德擴大都市計畫環評通過，綠地面積提升20%</a>
+      <a class="ti" href="#"><span style="color:rgba(59,130,246,.5);font-size:.5rem">●</span>桃園市政府宣布八德區停車場擴建計畫，預計新增500個車位</a>
+    </div>
+  </div>
+</div>
+
+<!-- Navbar with §4.3.2 Bookmark + §4.3.6 Search -->
+<nav class="navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <i class="fa-solid fa-tower-broadcast" style="-webkit-text-fill-color:#60a5fa"></i>八德夢想家
+    </a>
+    <div class="d-flex align-items-center gap-1 flex-wrap">
+      <button id="search-btn" onclick="toggleSearch()" style="background:transparent;border:1px solid var(--bd);color:var(--t2);width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-right:4px" onmouseover="this.style.borderColor='rgba(59,130,246,.4)';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--t2)'">
+        <i class="fa-solid fa-magnifying-glass" style="font-size:.82rem"></i>
+      </button>
+      <a href="#" class="nlp on">首頁</a>
+      <a href="02-News-List.html" class="nlp">最新消息</a>
+      <a href="04-News-Feed.html" class="nlp">新聞消息</a>
+      <a href="05-Wish.html" class="btn btn-sm btn-outline-primary rounded-pill px-3 ms-1" style="font-size:.84rem"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>許願池</a>
+      <button onclick="showBM()" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="font-size:.84rem"><i class="fa-regular fa-star me-1"></i>加入最愛</button>
+    </div>
+  </div>
+</nav>
+
+<!-- §4.3.6 Search Overlay -->
+<div id="search-ov" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(7,11,20,.92);backdrop-filter:blur(24px);align-items:flex-start;justify-content:center;padding-top:130px">
+  <div style="width:100%;max-width:600px;padding:0 20px">
+    <div style="display:flex;align-items:center;background:rgba(15,23,42,.95);border:1px solid rgba(59,130,246,.45);border-radius:16px;padding:.7rem 1.1rem;box-shadow:0 0 0 4px rgba(59,130,246,.12)">
+      <i class="fa-solid fa-magnifying-glass" style="color:#3b82f6;margin-right:12px;font-size:1rem"></i>
+      <input id="si" type="text" placeholder="搜尋新聞、公告、議題..." autofocus style="flex:1;background:transparent;border:none;color:#f8fafc;font-size:1rem;outline:none;font-family:var(--f)">
+      <kbd style="font-size:.72rem;color:var(--t3);background:rgba(30,41,59,.8);border:1px solid var(--bd);border-radius:5px;padding:2px 7px;font-family:var(--f)">Esc</kbd>
+    </div>
+    <div style="margin-top:6px;background:rgba(12,18,30,.99);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.5)">
+      <div style="padding:.6rem 1.1rem;background:rgba(59,130,246,.1);display:flex;align-items:center;gap:10px;cursor:pointer"><i class="fa-solid fa-magnifying-glass" style="color:var(--t4);font-size:.72rem;width:13px"></i><span style="font-size:.92rem;color:#e2e8f0"><strong style="color:#60a5fa">八德捷運</strong>綠線延伸段</span></div>
+      <div style="padding:.6rem 1.1rem;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:10px;cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background='transparent'"><i class="fa-solid fa-magnifying-glass" style="color:var(--t4);font-size:.72rem;width:13px"></i><span style="font-size:.92rem;color:#e2e8f0">八德擴大都市計畫</span></div>
+      <div style="padding:.6rem 1.1rem;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:10px;cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background='transparent'"><i class="fa-solid fa-magnifying-glass" style="color:var(--t4);font-size:.72rem;width:13px"></i><span style="font-size:.92rem;color:#e2e8f0">霄裡 公聽會 停車</span></div>
+      <div style="padding:.6rem 1.1rem;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:10px;cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background='transparent'"><i class="fa-solid fa-clock-rotate-left" style="color:var(--t4);font-size:.72rem;width:13px"></i><span style="font-size:.92rem;color:#e2e8f0">大湳市場 最新消息</span></div>
+      <div style="padding:.48rem 1.1rem;border-top:1px solid rgba(255,255,255,.05);font-size:.78rem;color:var(--t4)">按 <kbd style="font-size:.65rem;color:var(--t3);background:rgba(30,41,59,.8);border:1px solid var(--bd);border-radius:3px;padding:1px 5px;font-family:var(--f)">Enter</kbd> 搜尋全部結果</div>
+    </div>
+    <div style="margin-top:10px;text-align:center;font-size:12px;color:var(--t4)">按 Esc 關閉搜尋</div>
+  </div>
+</div>
+
+<!-- Bookmark Modal -->
+<div class="modal fade" id="bmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" style="background:rgba(22,27,34,.97);border:1px solid rgba(255,255,255,.1);border-radius:16px">
+      <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold fs-6"><i class="fa-regular fa-star text-warning me-2"></i>加入瀏覽器書籤</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body text-center py-3">
+        <kbd style="display:inline-block;font-size:1.7rem;padding:.5rem 1.4rem;background:rgba(59,130,246,.15);border:2px solid rgba(59,130,246,.5);border-radius:12px;color:#93c5fd;font-family:var(--f);letter-spacing:1px;cursor:pointer" onclick="this.style.transform='scale(.95)';setTimeout(()=>this.style.transform='',150)">⌘ + D</kbd>
+        <p class="text-muted small mt-2 mb-0">點擊上方按鍵可複製</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero: §4.3.3 Counter -->
+  <div class="hero text-center">
+    <h1 class="hero-title"><i class="fa-solid fa-tower-broadcast me-2" style="-webkit-text-fill-color:#60a5fa;font-size:.8em"></i>八德夢想家</h1>
+    <p class="hero-sub">桃園市八德區在地資訊平台，掌握最新動態</p>
+    <div class="vc-pill d-inline-flex">
+      <i class="fa-solid fa-users" style="color:var(--p);font-size:.9rem"></i>
+      <span id="vc" style="font-variant-numeric:tabular-nums;font-weight:700;font-size:1rem;color:#93c5fd;letter-spacing:.5px;min-width:3ch">0</span>
+      <span style="color:var(--t4);font-size:.82rem">人已瀏覽</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4"><div class="gc sc"><i class="fa-solid fa-database sc-icon"></i><div class="sc-num" id="s1">0</div><p class="text-secondary mt-2 mb-0 fw-medium" style="font-size:.9rem">資料庫總筆數</p></div></div>
+    <div class="col-md-4"><div class="gc sc"><i class="fa-solid fa-bolt sc-icon" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text"></i><div class="sc-num" id="s2">0</div><p class="text-secondary mt-2 mb-0 fw-medium" style="font-size:.9rem">今日新增</p></div></div>
+    <div class="col-md-4">
+      <div class="gc" style="padding:1.8rem;height:100%">
+        <h6 class="text-secondary fw-semibold mb-3 d-flex align-items-center" style="font-size:.88rem"><i class="fa-solid fa-chart-pie me-2" style="color:var(--p)"></i>來源分佈</h6>
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#facc15;display:inline-block"></span><span class="small text-light">Google News</span></div>
+            <span class="fw-bold" style="color:#60a5fa;font-size:.9rem">986</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:4px"><div style="height:4px;background:linear-gradient(90deg,#facc15,#fbbf24);border-radius:2px;width:79%"></div></div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#22d3ee;display:inline-block"></span><span class="small text-light">PTT</span></div>
+            <span class="fw-bold" style="color:#60a5fa;font-size:.9rem">261</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px"><div style="height:4px;background:linear-gradient(90deg,#22d3ee,#06b6d4);border-radius:2px;width:21%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Latest News Preview -->
+  <div class="sh">
+    <h2 class="sh-t fw-bold mb-0" style="font-size:1.1rem"><span style="width:4px;height:20px;background:var(--p);border-radius:2px;display:inline-block"></span>最新消息</h2>
+    <a href="02-News-List.html" class="btn-o" style="font-size:.84rem;padding:.45rem 1rem">查看全部 <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="nc">
+        <div class="nc-img"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body">
+          <span class="cat-badge">公告</span>
+          <a href="03-News-Detail.html" class="nc-title d-block">八德區捷運綠線延伸工程最新進度公告</a>
+          <p class="nc-sum">桃園市政府交通局發布最新公告，捷運綠線八德段預計2026年底完工通車，工程進度達92%。</p>
+          <div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/04/15</span><a href="03-News-Detail.html" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="nc">
+        <div class="nc-img" style="background:linear-gradient(135deg,rgba(52,211,153,.15),rgba(15,23,42,.9))"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body">
+          <span class="cat-badge" style="background:rgba(52,211,153,.15);color:#34d399;border-color:rgba(52,211,153,.3)">活動</span>
+          <a href="#" class="nc-title d-block">2026 八德春季社區運動會報名開始</a>
+          <p class="nc-sum">春季社區運動會將於5月3日舉行，活動包含健走、趣味競賽，歡迎全家大小踴躍參加。</p>
+          <div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/04/10</span><a href="#" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="nc">
+        <div class="nc-img" style="background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(15,23,42,.9))"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body">
+          <span class="cat-badge" style="background:rgba(251,191,36,.15);color:#fbbf24;border-color:rgba(251,191,36,.3)">工程</span>
+          <a href="#" class="nc-title d-block">大湳市場周邊道路整修工程完工通知</a>
+          <p class="nc-sum">歷時三個月的道路整修工程已全部完工，即日起全線開放通行，感謝居民耐心配合。</p>
+          <div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/04/08</span><a href="#" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- §4.3.4 External News Block -->
+  <div class="sh">
+    <h2 class="sh-t fw-bold mb-0" style="font-size:1.1rem"><span style="width:4px;height:20px;background:var(--cy);border-radius:2px;display:inline-block"></span>新聞消息</h2>
+    <a href="04-News-Feed.html" class="btn-o" style="font-size:.84rem;padding:.45rem 1rem">更多新聞 <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+  <div class="gc mb-5" style="padding:0;overflow:hidden">
+    <div style="padding:.9rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background='transparent'">
+      <span style="flex-shrink:0;display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;background:rgba(234,179,8,.12);color:#facc15;border:1px solid rgba(234,179,8,.25);text-transform:uppercase;letter-spacing:.3px"><i class="fa-brands fa-google" style="font-size:.65rem"></i>Google</span>
+      <div style="flex:1"><div style="font-size:.9rem;color:#e2e8f0;font-weight:500;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical">捷運綠線八德延伸段工程進度超前 桃園市府宣布預計明年底通車</div><div style="font-size:.74rem;color:var(--t4);margin-top:2px">2026/04/20 · 聯合報</div></div>
+      <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.7rem;color:var(--t4);flex-shrink:0"></i>
+    </div>
+    <div style="padding:.9rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background='transparent'">
+      <span style="flex-shrink:0;display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.25);text-transform:uppercase;letter-spacing:.3px">PTT</span>
+      <div style="flex:1"><div style="font-size:.9rem;color:#e2e8f0;font-weight:500;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical">[問卦] 八德大湳市場旁邊停車場什麼時候開放？費用大概多少？</div><div style="font-size:.74rem;color:var(--t4);margin-top:2px">2026/04/19 · PTT Taoyuan板</div></div>
+      <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.7rem;color:var(--t4);flex-shrink:0"></i>
+    </div>
+    <div style="padding:.9rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background='transparent'">
+      <span style="flex-shrink:0;display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;background:rgba(234,179,8,.12);color:#facc15;border:1px solid rgba(234,179,8,.25);text-transform:uppercase;letter-spacing:.3px"><i class="fa-brands fa-google" style="font-size:.65rem"></i>Google</span>
+      <div style="flex:1"><div style="font-size:.9rem;color:#e2e8f0;font-weight:500;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical">霄裡地區水資源保護計畫 環保署公告環評審查通過</div><div style="font-size:.74rem;color:var(--t4);margin-top:2px">2026/04/18 · 自由時報</div></div>
+      <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.7rem;color:var(--t4);flex-shrink:0"></i>
+    </div>
+    <div style="padding:.7rem 1.2rem;text-align:center;border-top:1px solid rgba(255,255,255,.04)"><a href="04-News-Feed.html" style="font-size:.82rem;color:var(--p);font-weight:600;text-decoration:none">查看全部新聞消息 →</a></div>
+  </div>
+
+  <!-- §4.3.7 Map Embed -->
+  <div class="sh">
+    <h2 class="sh-t fw-bold mb-0" style="font-size:1.1rem"><span style="width:4px;height:20px;background:var(--gn);border-radius:2px;display:inline-block"></span>八德區地圖</h2>
+  </div>
+  <div style="border-radius:var(--rl);overflow:hidden;border:1px solid var(--bd);aspect-ratio:16/9;margin-bottom:2.5rem;position:relative;max-width:100%">
+    <iframe src="https://maps.google.com/maps?q=桃園市八德區&z=14&output=embed&hl=zh-TW" style="width:100%;height:100%;border:0" allowfullscreen loading="lazy" title="八德區地圖"></iframe>
+  </div>
+
+  <!-- §4.4 LINE CTA -->
+  <div class="gc mb-4" style="background:linear-gradient(135deg,rgba(6,199,85,.1),rgba(6,199,85,.03));border-color:rgba(6,199,85,.2)">
+    <div class="cta-card">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <i class="fa-brands fa-line" style="font-size:1.4rem;color:#06C755"></i>
+          <h6 class="mb-0 fw-bold" style="font-size:1rem">追蹤八德夢想家 LINE 官方帳號</h6>
+        </div>
+        <p class="text-secondary mb-0" style="font-size:.88rem">訂閱後可即時接收最新消息推播通知，不漏接任何重要公告</p>
+      </div>
+      <a href="#" style="flex-shrink:0;display:inline-flex;align-items:center;gap:8px;background:#06C755;color:#fff;text-decoration:none;border-radius:10px;padding:.55rem 1.4rem;font-weight:700;font-size:.92rem;box-shadow:0 4px 16px rgba(6,199,85,.4);transition:all .15s;white-space:nowrap" onmouseover="this.style.background='#05A744';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#06C755';this.style.transform=''">
+        <i class="fa-brands fa-line" style="font-size:1.1rem"></i>加 LINE 好友
+      </a>
+    </div>
+  </div>
+
+  <!-- CTA Pair -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-6">
+      <div class="gc cta-card">
+        <div><div class="d-flex align-items-center gap-2 mb-1"><i class="fa-solid fa-newspaper" style="color:var(--p);font-size:1.1rem"></i><h6 class="mb-0 fw-bold">新聞消息</h6></div><p class="text-secondary small mb-0">Google News、PTT 等平台即時抓取的八德區新聞</p></div>
+        <a href="04-News-Feed.html" class="btn-p" style="white-space:nowrap;flex-shrink:0">前往瀏覽 <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="gc cta-card">
+        <div><div class="d-flex align-items-center gap-2 mb-1"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--p);font-size:1.1rem"></i><h6 class="mb-0 fw-bold">許願池</h6></div><p class="text-secondary small mb-0">有任何建議或希望平台提供的功能，歡迎告訴我們</p></div>
+        <a href="05-Wish.html" class="btn-o" style="white-space:nowrap;flex-shrink:0">前往許願 <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleSearch(){const o=document.getElementById('search-ov');const shown=o.style.display==='flex';o.style.display=shown?'none':'flex';if(!shown)setTimeout(()=>document.getElementById('si').focus(),50)}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('search-ov').style.display='none'});
+document.getElementById('search-ov').addEventListener('click',function(e){if(e.target===this)this.style.display='none'});
+function showBM(){new bootstrap.Modal(document.getElementById('bmModal')).show()}
+function cnt(el,target,dur){const t0=performance.now();(function step(now){const p=Math.min((now-t0)/dur,1);el.textContent=Math.floor((1-Math.pow(1-p,3))*target).toLocaleString();if(p<1)requestAnimationFrame(step);else el.textContent=target.toLocaleString()})(t0)}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{cnt(document.getElementById('vc'),3891,1200);cnt(document.getElementById('s1'),1247,1500);cnt(document.getElementById('s2'),38,800)},400)});
+</script>
+</body>
+</html>

@@ -1,3 +1,10 @@
+"""爬蟲共用工具模組
+
+所有爬蟲都 import 這個模組取得：
+- 資料庫連線 (get_db_connection)
+- 設定檔讀取 (load_search_config)
+- 執行紀錄寫入 (log_run_start / log_run_finish)
+"""
 import os
 import psycopg2
 import psycopg2.extras
@@ -12,7 +19,7 @@ load_dotenv(BASE_DIR / ".env")
 
 
 def get_db_connection():
-    """建立 PostgreSQL 資料庫連線"""
+    """建立 PostgreSQL 資料庫連線，cursor 回傳 RealDictCursor（欄位名稱存取）。"""
     return psycopg2.connect(
         host=os.environ.get("PG_HOST", "127.0.0.1"),
         port=int(os.environ.get("PG_PORT", 5432)),
@@ -24,7 +31,7 @@ def get_db_connection():
 
 
 def load_search_config():
-    """讀取搜尋策略設定檔"""
+    """讀取 config/search_config.yaml，回傳 dict；檔案不存在時回傳空 dict。"""
     if not SEARCH_CONFIG_PATH.exists():
         return {}
     with open(SEARCH_CONFIG_PATH, "r", encoding="utf-8") as f:
@@ -32,7 +39,7 @@ def load_search_config():
 
 
 def log_run_start(conn, scraper_name: str) -> int:
-    """記錄爬蟲開始執行，回傳 run_id"""
+    """在 scraper_runs 寫入一筆「執行中」記錄，回傳 run_id 供後續更新用。"""
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO scraper_runs (scraper_name, status) VALUES (%s, %s) RETURNING id",
@@ -44,7 +51,14 @@ def log_run_start(conn, scraper_name: str) -> int:
 
 
 def log_run_finish(conn, run_id: int, status: str, found: int, inserted: int, error=None):
-    """更新爬蟲執行結果"""
+    """更新 scraper_runs 執行結果（completed_at、status、筆數、錯誤訊息）。
+
+    Args:
+        status:   "success" 或 "failed"
+        found:    符合過濾條件的文章數（不含略過的）
+        inserted: 實際寫入 DB 的新增筆數（重複者不計）
+        error:    失敗時的錯誤訊息字串
+    """
     with conn.cursor() as cur:
         cur.execute(
             """UPDATE scraper_runs

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>後台管理 — 八德夢想家</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+:root{--bg:#080c14;--s1:#0d1117;--s2:rgba(18,24,32,.9);--bd:rgba(255,255,255,.07);--p:#3b82f6;--pl:#60a5fa;--pg:rgba(59,130,246,.35);--gn:#34d399;--ro:#fb7185;--yw:#fbbf24;--t1:#f8fafc;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--f:"Inter","Noto Sans TC",-apple-system,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:#e2e8f0;font-family:var(--f);font-size:14px;line-height:1.6;margin:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── Login Screen ── */
+#login{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:var(--bg);background-image:radial-gradient(circle at center,rgba(59,130,246,.08),transparent 60%)}
+.login-card{background:rgba(18,24,32,.97);border:1px solid var(--bd);border-radius:20px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.login-logo{font-size:1.8rem;font-weight:800;background:linear-gradient(90deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.3rem}
+.login-input{width:100%;background:rgba(10,15,25,.7);border:1px solid var(--bd);color:#e2e8f0;border-radius:10px;padding:.6rem .9rem;font-size:.9rem;outline:none;font-family:var(--f);transition:all .2s;letter-spacing:.5px}
+.login-input:focus{border-color:var(--p);box-shadow:0 0 0 3px var(--pg);background:rgba(10,15,25,.9)}
+.login-btn{width:100%;background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;border-radius:10px;padding:.65rem;font-weight:600;font-size:.95rem;color:#fff;cursor:pointer;font-family:var(--f);transition:all .2s;margin-top:.75rem}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px var(--pg)}
+
+/* ── App Layout ── */
+#app{display:none;min-height:100vh}
+.sidebar{width:220px;background:var(--s1);border-right:1px solid var(--bd);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column}
+.sb-brand{padding:1.3rem 1.4rem;border-bottom:1px solid var(--bd);font-weight:700;font-size:.9rem;background:linear-gradient(90deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sb-nav{padding:.8rem .65rem;flex:1}
+.sb-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .75rem;border-radius:9px;cursor:pointer;transition:all .12s;color:var(--t3);font-size:.85rem;font-weight:500;text-decoration:none}
+.sb-item:hover{color:var(--t2);background:rgba(255,255,255,.04)}
+.sb-item.on{color:var(--pl);background:rgba(59,130,246,.1)}
+.sb-label{font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);padding:.8rem .75rem .3rem}
+.sb-foot{padding:1rem .65rem;border-top:1px solid var(--bd)}
+
+/* ── Main ── */
+.main{margin-left:220px;padding:28px 32px;min-height:100vh}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.top-title{font-size:1.3rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:10px}
+
+/* Stats row */
+.stat-mini{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;gap:12px}
+.stat-mini-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.stat-mini-num{font-size:1.4rem;font-weight:800;color:var(--t1);letter-spacing:-.5px;font-variant-numeric:tabular-nums;line-height:1}
+.stat-mini-lbl{font-size:.76rem;color:var(--t3);margin-top:2px}
+
+/* Table */
+.tbl-wrap{background:var(--s2);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.tbl-head{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid var(--bd)}
+table{width:100%;border-collapse:collapse}
+thead th{padding:.65rem 1rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t4);text-align:left;border-bottom:1px solid var(--bd);background:rgba(0,0,0,.15)}
+tbody tr{transition:background .1s;cursor:pointer}
+tbody tr:hover{background:rgba(255,255,255,.025)}
+tbody tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.04)}
+tbody td{padding:.7rem 1rem;font-size:.85rem;color:var(--t2);vertical-align:middle}
+td.title-cell{color:var(--t1);font-weight:500;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Status badge */
+.st-pub{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:99px;background:rgba(52,211,153,.12);color:#34d399}
+.st-draft{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:99px;background:rgba(251,191,36,.12);color:#fbbf24}
+.st-dot{width:5px;height:5px;border-radius:50%;display:inline-block}
+
+/* Action buttons */
+.act-btn{background:transparent;border:1px solid var(--bd);color:var(--t3);padding:.25rem .55rem;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .15s;font-family:var(--f);display:inline-flex;align-items:center;gap:4px}
+.act-btn:hover{color:var(--t1);border-color:rgba(255,255,255,.2)}
+.act-btn.del:hover{color:var(--ro);border-color:rgba(251,113,133,.35)}
+
+/* Btn primary */
+.btn-p{background:var(--p);color:#fff;border:none;padding:.5rem 1.1rem;border-radius:8px;font-weight:600;font-size:.84rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:all .15s;font-family:var(--f)}
+.btn-p:hover{background:#2563eb;transform:translateY(-1px);box-shadow:0 4px 12px var(--pg)}
+
+/* Form input */
+.f-ctrl{width:100%;background:rgba(10,15,25,.7);border:1px solid var(--bd);color:#e2e8f0;border-radius:8px;padding:.5rem .8rem;font-size:.85rem;outline:none;font-family:var(--f);transition:all .2s}
+.f-ctrl:focus{border-color:var(--p);box-shadow:0 0 0 2px rgba(59,130,246,.2)}
+.f-label{display:block;font-size:.78rem;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.3rem}
+
+/* Edit panel */
+.edit-panel{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:1.5rem;margin-top:20px}
+.quill-mock{background:rgba(10,15,25,.5);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.quill-toolbar{padding:.5rem .7rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:4px;flex-wrap:wrap;background:rgba(0,0,0,.2)}
+.qt-btn{background:transparent;border:1px solid transparent;color:var(--t3);padding:.22rem .38rem;border-radius:4px;font-size:.78rem;cursor:pointer;transition:all .12s;font-family:var(--f);min-width:26px;display:inline-flex;align-items:center;justify-content:center}
+.qt-btn:hover{color:var(--t1);background:rgba(255,255,255,.07)}
+.qt-sep{width:1px;height:18px;background:var(--bd);margin:0 3px}
+.quill-body{min-height:200px;padding:1rem 1.2rem;font-size:.9rem;color:var(--t2);cursor:text}
+
+/* Cat badge */
+.cat-badge{display:inline-block;font-size:.67rem;font-weight:700;padding:.2rem .6rem;border-radius:5px;background:rgba(59,130,246,.15);color:var(--pl);border:1px solid rgba(59,130,246,.3);text-transform:uppercase;letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-logo"><i class="fa-solid fa-tower-broadcast me-2" style="-webkit-text-fill-color:#60a5fa;font-size:1.4rem"></i>八德夢想家</div>
+    <div style="font-size:.85rem;color:var(--t3);margin-bottom:1.8rem">後台管理系統 · 請輸入管理員 Token</div>
+    <label class="f-label" style="margin-bottom:.35rem">Admin Token</label>
+    <input id="token-input" class="login-input" type="password" placeholder="••••••••••••••••" autocomplete="current-password">
+    <div id="token-err" style="display:none;font-size:.78rem;color:var(--ro);margin-top:6px"><i class="fa-solid fa-circle-exclamation me-1"></i>Token 錯誤，請重新輸入</div>
+    <button class="login-btn" onclick="doLogin()"><i class="fa-solid fa-right-to-bracket me-2"></i>登入後台</button>
+    <div style="margin-top:1.2rem;text-align:center;font-size:.76rem;color:var(--t4)">Token 設定於 .env 檔案的 ADMIN_TOKEN 欄位</div>
+  </div>
+</div>
+
+<!-- Admin App -->
+<div id="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-brand"><i class="fa-solid fa-tower-broadcast me-2" style="-webkit-text-fill-color:#60a5fa;font-size:1rem"></i>後台管理</div>
+    <div class="sb-nav">
+      <div class="sb-label">內容管理</div>
+      <a class="sb-item on" onclick="showView('list')"><i class="fa-solid fa-list fa-fw"></i>最新消息列表</a>
+      <a class="sb-item" onclick="showView('new')"><i class="fa-solid fa-plus fa-fw"></i>新增消息</a>
+      <div class="sb-label" style="margin-top:8px">系統</div>
+      <a class="sb-item"><i class="fa-solid fa-chart-bar fa-fw"></i>統計資料</a>
+      <a class="sb-item"><i class="fa-solid fa-comment-dots fa-fw"></i>許願池紀錄</a>
+      <a class="sb-item"><i class="fa-solid fa-robot fa-fw"></i>爬蟲狀態</a>
+    </div>
+    <div class="sb-foot">
+      <a class="sb-item" onclick="document.getElementById('login').style.display='flex';document.getElementById('app').style.display='none'"><i class="fa-solid fa-right-from-bracket fa-fw"></i>登出</a>
+      <a class="sb-item" href="01-Homepage.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square fa-fw"></i>前往前台</a>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+
+    <!-- Stats row -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="stat-mini">
+          <div class="stat-mini-icon" style="background:rgba(59,130,246,.15)"><i class="fa-solid fa-newspaper" style="color:#60a5fa"></i></div>
+          <div><div class="stat-mini-num">24</div><div class="stat-mini-lbl">已發佈消息</div></div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-mini">
+          <div class="stat-mini-icon" style="background:rgba(251,191,36,.12)"><i class="fa-solid fa-file-lines" style="color:#fbbf24"></i></div>
+          <div><div class="stat-mini-num">5</div><div class="stat-mini-lbl">草稿中</div></div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-mini">
+          <div class="stat-mini-icon" style="background:rgba(52,211,153,.12)"><i class="fa-solid fa-database" style="color:#34d399"></i></div>
+          <div><div class="stat-mini-num">1,247</div><div class="stat-mini-lbl">爬蟲資料</div></div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-mini">
+          <div class="stat-mini-icon" style="background:rgba(167,139,250,.12)"><i class="fa-solid fa-wand-magic-sparkles" style="color:#a78bfa"></i></div>
+          <div><div class="stat-mini-num">12</div><div class="stat-mini-lbl">許願池留言</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List view -->
+    <div id="view-list">
+      <div class="top-bar">
+        <div class="top-title"><i class="fa-solid fa-list" style="color:var(--pl);font-size:1rem"></i>最新消息列表</div>
+        <button class="btn-p" onclick="showView('new')"><i class="fa-solid fa-plus"></i>新增消息</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head">
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="text" class="f-ctrl" placeholder="搜尋標題..." style="width:220px;padding:.38rem .7rem;font-size:.82rem">
+            <select class="f-ctrl" style="width:120px;padding:.38rem .7rem;font-size:.82rem">
+              <option>全部分類</option>
+              <option>公告</option><option>活動</option><option>工程</option><option>交通</option><option>民生</option>
+            </select>
+          </div>
+          <div style="font-size:.78rem;color:var(--t4)">共 29 筆</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:36px"><input type="checkbox" style="accent-color:#3b82f6"></th>
+              <th>標題</th>
+              <th>分類</th>
+              <th>狀態</th>
+              <th>發佈日期</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="showView('edit')">
+              <td><input type="checkbox" style="accent-color:#3b82f6"></td>
+              <td class="title-cell">八德區捷運綠線延伸工程最新進度公告</td>
+              <td><span class="cat-badge">公告</span></td>
+              <td><span class="st-pub"><span class="st-dot" style="background:#34d399"></span>已發佈</span></td>
+              <td style="color:var(--t3);font-size:.8rem">2026/04/15</td>
+              <td>
+                <div style="display:flex;gap:4px">
+                  <button class="act-btn" onclick="event.stopPropagation();showView('edit')"><i class="fa-solid fa-pen-to-square"></i>編輯</button>
+                  <a href="03-News-Detail.html" target="_blank" class="act-btn" onclick="event.stopPropagation()"><i class="fa-solid fa-eye"></i></a>
+                  <button class="act-btn del" onclick="event.stopPropagation()"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="accent-color:#3b82f6"></td>
+              <td class="title-cell">2026 八德春季社區運動會報名開始</td>
+              <td><span class="cat-badge" style="background:rgba(52,211,153,.15);color:#34d399;border-color:rgba(52,211,153,.3)">活動</span></td>
+              <td><span class="st-pub"><span class="st-dot" style="background:#34d399"></span>已發佈</span></td>
+              <td style="color:var(--t3);font-size:.8rem">2026/04/10</td>
+              <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="showView('edit')"><i class="fa-solid fa-pen-to-square"></i>編輯</button><button class="act-btn del"><i class="fa-solid fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="accent-color:#3b82f6"></td>
+              <td class="title-cell">大湳市場周邊道路整修工程完工通知</td>
+              <td><span class="cat-badge" style="background:rgba(251,191,36,.15);color:#fbbf24;border-color:rgba(251,191,36,.3)">工程</span></td>
+              <td><span class="st-pub"><span class="st-dot" style="background:#34d399"></span>已發佈</span></td>
+              <td style="color:var(--t3);font-size:.8rem">2026/04/08</td>
+              <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="showView('edit')"><i class="fa-solid fa-pen-to-square"></i>編輯</button><button class="act-btn del"><i class="fa-solid fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="accent-color:#3b82f6"></td>
+              <td class="title-cell">八德區衛生所春季免費健檢活動【草稿】</td>
+              <td><span class="cat-badge" style="background:rgba(167,139,250,.15);color:#a78bfa;border-color:rgba(167,139,250,.3)">民生</span></td>
+              <td><span class="st-draft"><span class="st-dot" style="background:#fbbf24"></span>草稿</span></td>
+              <td style="color:var(--t3);font-size:.8rem">—</td>
+              <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="showView('edit')"><i class="fa-solid fa-pen-to-square"></i>編輯</button><button class="act-btn del"><i class="fa-solid fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="accent-color:#3b82f6"></td>
+              <td class="title-cell">八德擴大都市計畫草案公開展覽通知</td>
+              <td><span class="cat-badge">公告</span></td>
+              <td><span class="st-pub"><span class="st-dot" style="background:#34d399"></span>已發佈</span></td>
+              <td style="color:var(--t3);font-size:.8rem">2026/03/20</td>
+              <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="showView('edit')"><i class="fa-solid fa-pen-to-square"></i>編輯</button><button class="act-btn del"><i class="fa-solid fa-trash"></i></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit view -->
+    <div id="view-edit" style="display:none">
+      <div class="top-bar">
+        <div class="top-title">
+          <button onclick="showView('list')" style="background:transparent;border:none;color:var(--t3);cursor:pointer;padding:4px;border-radius:6px;transition:color .15s" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'"><i class="fa-solid fa-arrow-left"></i></button>
+          <i class="fa-solid fa-pen-to-square" style="color:var(--pl);font-size:1rem"></i>編輯消息
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="act-btn" style="padding:.42rem .8rem;font-size:.82rem"><i class="fa-regular fa-eye me-1"></i>預覽</button>
+          <button class="btn-p" style="background:rgba(52,211,153,.2);color:#34d399;box-shadow:none" onmouseover="this.style.background='rgba(52,211,153,.3)'" onmouseout="this.style.background='rgba(52,211,153,.2)'"><i class="fa-solid fa-floppy-disk"></i>儲存草稿</button>
+          <button class="btn-p"><i class="fa-solid fa-paper-plane"></i>發佈</button>
+        </div>
+      </div>
+      <div class="edit-panel">
+        <div class="row g-3 mb-3">
+          <div class="col-12">
+            <label class="f-label">標題 <span style="color:var(--ro)">*</span></label>
+            <input type="text" class="f-ctrl" value="八德區捷運綠線延伸工程最新進度公告" style="font-size:1rem;font-weight:600;padding:.6rem .9rem">
+          </div>
+          <div class="col-md-4">
+            <label class="f-label">Slug（網址）</label>
+            <input type="text" class="f-ctrl" value="mrt-greenline-progress-2026" style="font-family:monospace;font-size:.82rem">
+          </div>
+          <div class="col-md-4">
+            <label class="f-label">分類</label>
+            <input type="text" class="f-ctrl" value="公告" id="cat-inp">
+            <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+              <button style="font-size:.7rem;padding:.18rem .5rem;border-radius:5px;border:1px solid var(--bd);background:transparent;color:var(--t3);cursor:pointer;font-family:var(--f)" onclick="document.getElementById('cat-inp').value=this.textContent">公告</button>
+              <button style="font-size:.7rem;padding:.18rem .5rem;border-radius:5px;border:1px solid var(--bd);background:transparent;color:var(--t3);cursor:pointer;font-family:var(--f)" onclick="document.getElementById('cat-inp').value=this.textContent">活動</button>
+              <button style="font-size:.7rem;padding:.18rem .5rem;border-radius:5px;border:1px solid var(--bd);background:transparent;color:var(--t3);cursor:pointer;font-family:var(--f)" onclick="document.getElementById('cat-inp').value=this.textContent">工程</button>
+              <button style="font-size:.7rem;padding:.18rem .5rem;border-radius:5px;border:1px solid var(--bd);background:transparent;color:var(--t3);cursor:pointer;font-family:var(--f)" onclick="document.getElementById('cat-inp').value=this.textContent">交通</button>
+              <button style="font-size:.7rem;padding:.18rem .5rem;border-radius:5px;border:1px solid var(--bd);background:transparent;color:var(--t3);cursor:pointer;font-family:var(--f)" onclick="document.getElementById('cat-inp').value=this.textContent">民生</button>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="f-label">發佈時間</label>
+            <input type="datetime-local" class="f-ctrl" value="2026-04-15T10:00">
+          </div>
+          <div class="col-12">
+            <label class="f-label">封面圖片</label>
+            <div style="border:2px dashed var(--bd);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='rgba(59,130,246,.4)'" onmouseout="this.style.borderColor='var(--bd)'">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.5rem;color:var(--t4);display:block;margin-bottom:6px"></i>
+              <div style="font-size:.82rem;color:var(--t3)">拖曳或點擊上傳圖片</div>
+              <div style="font-size:.72rem;color:var(--t4);margin-top:2px">PNG / JPG · 最大 5MB</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="f-label">摘要</label>
+            <textarea class="f-ctrl" rows="2" placeholder="顯示於列表頁及 SEO meta description（建議 60–120 字）">桃園市政府交通局發布最新公告，捷運綠線八德段預計2026年底完工通車，工程進度達92%。</textarea>
+          </div>
+          <div class="col-12">
+            <label class="f-label">內文 <span style="font-size:.7rem;color:var(--t4);text-transform:none;letter-spacing:0;font-weight:400">（Quill 編輯器）</span></label>
+            <div class="quill-mock">
+              <div class="quill-toolbar">
+                <button class="qt-btn"><i class="fa-solid fa-bold"></i></button>
+                <button class="qt-btn"><i class="fa-solid fa-italic"></i></button>
+                <button class="qt-btn"><i class="fa-solid fa-underline"></i></button>
+                <div class="qt-sep"></div>
+                <button class="qt-btn"><i class="fa-solid fa-heading"></i></button>
+                <button class="qt-btn" style="font-size:.72rem;font-weight:700">H2</button>
+                <button class="qt-btn" style="font-size:.72rem;font-weight:700">H3</button>
+                <div class="qt-sep"></div>
+                <button class="qt-btn"><i class="fa-solid fa-list-ul"></i></button>
+                <button class="qt-btn"><i class="fa-solid fa-list-ol"></i></button>
+                <div class="qt-sep"></div>
+                <button class="qt-btn"><i class="fa-solid fa-link"></i></button>
+                <button class="qt-btn"><i class="fa-regular fa-image"></i></button>
+                <div class="qt-sep"></div>
+                <button class="qt-btn"><i class="fa-solid fa-quote-right"></i></button>
+                <button class="qt-btn"><i class="fa-solid fa-code"></i></button>
+              </div>
+              <div class="quill-body" contenteditable="true">
+                <p>桃園市政府交通局於今日正式發布捷運綠線八德延伸段工程最新進度報告。截至2026年4月，整體工程進度已達 <strong style="color:#f8fafc">92%</strong>，預計可於本年底完工...</p>
+                <br>
+                <p>點擊此處開始編輯內文</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="f-label">Meta Description <span style="font-size:.7rem;color:var(--t4);text-transform:none;letter-spacing:0;font-weight:400">（SEO，建議 120–160 字元）</span></label>
+            <textarea class="f-ctrl" id="meta-desc" rows="2" oninput="updMeta(this)">桃園市政府交通局公告捷運綠線八德段工程最新進度，目前達92%，預計2026年底完工通車。</textarea>
+            <div id="meta-count" style="font-size:.74rem;color:var(--t3);text-align:right;margin-top:3px">46 / 160 字元</div>
+          </div>
+          <div class="col-12">
+            <div style="display:flex;align-items:center;gap:12px;padding:.8rem 1rem;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:8px">
+              <label class="form-check-label" style="font-size:.88rem;color:var(--t1);cursor:pointer">
+                <input type="checkbox" checked style="accent-color:#34d399;margin-right:6px">立即發佈
+              </label>
+              <span style="font-size:.78rem;color:var(--t3)">關閉後此消息將儲存為草稿</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New view -->
+    <div id="view-new" style="display:none">
+      <div class="top-bar">
+        <div class="top-title">
+          <button onclick="showView('list')" style="background:transparent;border:none;color:var(--t3);cursor:pointer;padding:4px;border-radius:6px" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'"><i class="fa-solid fa-arrow-left"></i></button>
+          <i class="fa-solid fa-plus" style="color:var(--pl);font-size:1rem"></i>新增消息
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-p" style="background:rgba(52,211,153,.2);color:#34d399;box-shadow:none"><i class="fa-solid fa-floppy-disk"></i>儲存草稿</button>
+          <button class="btn-p"><i class="fa-solid fa-paper-plane"></i>發佈</button>
+        </div>
+      </div>
+      <div class="edit-panel">
+        <div class="row g-3">
+          <div class="col-12"><label class="f-label">標題 <span style="color:var(--ro)">*</span></label><input type="text" class="f-ctrl" placeholder="輸入消息標題..." style="font-size:1rem;padding:.6rem .9rem"></div>
+          <div class="col-md-6"><label class="f-label">分類</label><input type="text" class="f-ctrl" placeholder="公告、活動、工程..."></div>
+          <div class="col-md-6"><label class="f-label">發佈時間</label><input type="datetime-local" class="f-ctrl"></div>
+          <div class="col-12"><label class="f-label">摘要</label><textarea class="f-ctrl" rows="2" placeholder="顯示於列表頁的摘要文字..."></textarea></div>
+          <div class="col-12">
+            <label class="f-label">內文</label>
+            <div class="quill-mock">
+              <div class="quill-toolbar">
+                <button class="qt-btn"><i class="fa-solid fa-bold"></i></button><button class="qt-btn"><i class="fa-solid fa-italic"></i></button><button class="qt-btn"><i class="fa-solid fa-underline"></i></button><div class="qt-sep"></div><button class="qt-btn" style="font-size:.72rem;font-weight:700">H2</button><button class="qt-btn" style="font-size:.72rem;font-weight:700">H3</button><div class="qt-sep"></div><button class="qt-btn"><i class="fa-solid fa-list-ul"></i></button><button class="qt-btn"><i class="fa-solid fa-list-ol"></i></button><div class="qt-sep"></div><button class="qt-btn"><i class="fa-solid fa-link"></i></button><button class="qt-btn"><i class="fa-regular fa-image"></i></button>
+              </div>
+              <div class="quill-body" contenteditable="true" style="color:var(--t4)">開始輸入內文...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function doLogin(){
+  const v=document.getElementById('token-input').value;
+  if(!v){document.getElementById('token-err').style.display='block';return}
+  document.getElementById('token-err').style.display='none';
+  // Simulate login (any non-empty token works in mockup)
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+document.getElementById('token-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+function showView(v){
+  ['list','edit','new'].forEach(k=>document.getElementById('view-'+k).style.display='none');
+  document.getElementById('view-'+v).style.display='block';
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+  if(v==='list'||v==='edit') document.querySelector('.sb-item:first-child').classList.add('on');
+  if(v==='new') document.querySelectorAll('.sb-item')[1].classList.add('on');
+}
+
+function updMeta(el){
+  const n=el.value.length;
+  const c=document.getElementById('meta-count');
+  c.textContent=n+' / 160 字元';
+  c.style.color=n>160?'#fb7185':n>120?'#34d399':'var(--t3)';
+}
+</script>
+</body>
+</html>

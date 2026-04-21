@@ -1,4 +1,8 @@
-"""Google News RSS scraper
+"""Google News RSS 爬蟲
+
+Google News 提供 RSS feed，以關鍵字組合搜尋，不需登入、不需 API key。
+關鍵字清單由 config/search_config.yaml 動態產生（core × issues + local_topics）。
+
 使用方式：python scrapers/news_rss.py
 """
 import json
@@ -17,7 +21,13 @@ LOCATION = CONFIG["location"]
 
 
 def generate_keywords():
-    """根據 config 動態生成搜尋關鍵字清單"""
+    """根據 config/search_config.yaml 動態產生搜尋關鍵字清單。
+
+    產生規則：
+    - core：地區模板（如 "桃園市" "八德區"）
+    - issues：地區 × 議題（如 "桃園市" "八德區" "交通"）
+    - local_topics：在地特殊關鍵字（如 "捷運綠線" "八德"）
+    """
     keywords = []
     for template in CONFIG["news_keywords"]["core"]:
         keywords.append(template.format(**LOCATION))
@@ -28,22 +38,54 @@ def generate_keywords():
 
 
 def build_rss_url(keyword: str) -> str:
+    """將關鍵字編碼成 Google News RSS URL（繁體中文 / 台灣版）。"""
     return (
         f"https://news.google.com/rss/search?"
         f"q={quote(keyword)}&hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
     )
 
 
+# 判斷文章是否與八德區相關的詞彙集合
+BADE_TERMS = ["八德", "霄裡", "大湳", "八德擴大都市計畫"]
+
+
+def is_relevant(title: str, summary: str) -> bool:
+    """文章標題或摘要必須含八德區相關詞彙才算相關。
+
+    設計原因：Google News 以關鍵字搜尋，回傳結果可能包含整個桃園市甚至全台新聞，
+    需要二次過濾確保內容確實與八德區有關。
+    """
+    text = (title or "") + (summary or "")
+    return any(term in text for term in BADE_TERMS)
+
+
 def insert_post(conn, entry, keyword) -> bool:
-    """回傳 True 代表實際插入，False 代表重複略過。"""
+    """將單篇 RSS 文章寫入 raw_posts。
+
+    Args:
+        entry:   feedparser 解析出的單篇文章 dict
+        keyword: 產生此篇文章的搜尋關鍵字（存為 source_account，方便統計熱門議題）
+
+    Returns:
+        True 代表實際新增，False 代表重複略過（ON CONFLICT DO NOTHING）
+    """
+    # Google News 用 link 作為文章唯一 ID
     post_id = entry.get("id") or entry.get("link")
     if not post_id:
+        return False
+
+    title   = entry.get("title", "")
+    summary = entry.get("summary", "")
+
+    # 第一道過濾：相關性（標題或摘要必須含八德區關鍵詞）
+    if not is_relevant(title, summary):
         return False
 
     try:
         published_dt = date_parser.parse(entry.get("published", "")) if entry.get("published") else None
 
-        if published_dt and published_dt.replace(tzinfo=None) < datetime(2026, 3, 1):
+        # 第二道過濾：只保留 2026 年以後的文章
+        if published_dt and published_dt.replace(tzinfo=None) < datetime(2026, 1, 1):
             return False
 
         published = published_dt.strftime("%Y-%m-%d %H:%M:%S") if published_dt else None
@@ -59,11 +101,12 @@ def insert_post(conn, entry, keyword) -> bool:
                ON CONFLICT (source, post_id) DO NOTHING""",
             (
                 "news",
-                keyword,
+                keyword,       # source_account 記錄搜尋關鍵字，用於首頁「熱門議題」統計
                 post_id,
+                # source 欄位為新聞媒體名稱（dict 格式），非 dict 時略過
                 entry.get("source", {}).get("title") if isinstance(entry.get("source"), dict) else None,
-                entry.get("title"),
-                entry.get("summary", ""),
+                title,
+                summary,
                 entry.get("link"),
                 published,
                 json.dumps(dict(entry), default=str, ensure_ascii=False),
@@ -87,12 +130,13 @@ def run():
             print(f"🔍 抓取：{keyword}")
             feed = feedparser.parse(build_rss_url(keyword))
 
+            # bozo=True 代表 RSS 格式有問題，但通常仍可解析，只列警告不中斷
             if feed.bozo:
                 print(f"  ⚠️  RSS parse warning: {feed.bozo_exception}")
 
             found    = len(feed.entries)
             inserted = sum(1 for e in feed.entries if insert_post(conn, e, keyword))
-            conn.commit()
+            conn.commit()  # 每個關鍵字處理完後 commit，避免一個失敗回滾全部
 
             total_found    += found
             total_inserted += inserted

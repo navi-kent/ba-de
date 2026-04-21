@@ -1,255 +1,299 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" data-bs-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>許願池 - 八德夢想家</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(22, 27, 34, 0.65);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --primary-color: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.4);
-        }
-
-        body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 40%),
-                              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent 40%);
-            color: #e2e8f0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-
-        .navbar {
-            background: rgba(11, 15, 25, 0.8) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            background: linear-gradient(90deg, #60a5fa, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        .form-control, .form-control:focus {
-            background-color: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-color);
-            color: #e2e8f0;
-            border-radius: 10px;
-        }
-
-        .form-control:focus {
-            background-color: rgba(15, 23, 42, 0.85);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-            color: #fff;
-        }
-
-        .form-control::placeholder { color: #475569; }
-
-        .form-label {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 0.4rem;
-        }
-
-        textarea.form-control { resize: vertical; min-height: 160px; }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border: none;
-            border-radius: 12px;
-            padding: 0.75rem 2.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-submit:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
-        }
-
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .char-count {
-            font-size: 0.78rem;
-            color: #475569;
-            text-align: right;
-            margin-top: 0.3rem;
-            transition: color 0.2s;
-        }
-        .char-count.warning { color: #f59e0b; }
-        .char-count.danger   { color: #ef4444; }
-
-        .notice-box {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 12px;
-            padding: 1rem 1.2rem;
-            font-size: 0.875rem;
-            color: #93c5fd;
-        }
-
-        #result-box { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>許願池 — 八德資源網</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+:root{--bg:#0b0f19;--cb:rgba(22,27,34,.65);--bd:rgba(255,255,255,.08);--p:#3b82f6;--pd:#2563eb;--pl:#60a5fa;--pg:rgba(59,130,246,.4);--gn:#34d399;--ro:#fb7185;--yw:#fbbf24;--t1:#f8fafc;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--r:10px;--rl:16px;--f:"Inter","Noto Sans TC",-apple-system,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at top right,rgba(59,130,246,.1),transparent 40%),radial-gradient(circle at bottom left,rgba(16,185,129,.05),transparent 40%);background-attachment:fixed;color:#e2e8f0;font-family:var(--f);font-size:16px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+.navbar{background:rgba(11,15,25,.82)!important;backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:.75rem 0}
+.navbar-brand{font-weight:800;font-size:1.1rem;background:linear-gradient(135deg,#60a5fa,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-back{color:var(--t2);text-decoration:none;font-size:.87rem;font-weight:500;padding:.36rem .82rem;border-radius:999px;border:1px solid var(--bd);transition:all .15s;display:inline-flex;align-items:center;gap:.4rem}
+.btn-back:hover{color:var(--t1);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04)}
+.gc{background:var(--cb);backdrop-filter:blur(12px);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.form-ctrl{width:100%;background:rgba(15,23,42,.6);border:1px solid var(--bd);color:#e2e8f0;border-radius:var(--r);padding:.55rem .9rem;font-size:.9rem;outline:none;transition:all .2s;font-family:var(--f)}
+.form-ctrl:focus{background:rgba(15,23,42,.88);border-color:var(--p);box-shadow:0 0 0 3px rgba(59,130,246,.2);color:#fff}
+.form-ctrl::placeholder{color:var(--t4)}
+.form-ctrl.err{border-color:rgba(251,113,133,.55);box-shadow:0 0 0 3px rgba(251,113,133,.12)}
+.form-ctrl.ok{border-color:rgba(52,211,153,.5);box-shadow:0 0 0 3px rgba(52,211,153,.1)}
+textarea.form-ctrl{resize:vertical;min-height:160px}
+.flabel{display:block;font-size:.88rem;color:var(--t2);font-weight:500;margin-bottom:.4rem}
+.fhint{font-size:.78rem;margin-top:4px}
+.ferr{display:none;font-size:.78rem;color:var(--ro);margin-top:4px}
+.ferr i{margin-right:3px}
+.btn-sub{background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;border-radius:12px;padding:.72rem 2.5rem;font-weight:600;font-size:1rem;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(59,130,246,.3);transition:all .2s;font-family:var(--f);width:100%}
+.btn-sub:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 22px rgba(59,130,246,.45)}
+.btn-sub:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.notice{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:1rem 1.2rem;font-size:.875rem;color:#93c5fd;margin-bottom:1.5rem}
+.cc{font-size:.76rem;color:var(--t4);text-align:right;margin-top:3px;transition:color .2s}
+.cc.w{color:var(--yw)}.cc.d{color:var(--ro)}
+.rb{display:none;padding:1rem;border-radius:12px;text-align:center;font-weight:500;margin-bottom:1rem;font-size:.9rem}
+.captcha-box{display:flex;align-items:center;gap:10px}
+.captcha-q{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:var(--r);padding:.55rem 1rem;font-size:1rem;font-weight:700;color:#93c5fd;white-space:nowrap;flex-shrink:0;letter-spacing:.5px}
+.captcha-refresh{background:transparent;border:none;color:var(--t4);cursor:pointer;padding:.3rem;border-radius:6px;transition:color .15s;font-size:.9rem;flex-shrink:0}
+.captcha-refresh:hover{color:var(--t2)}
+.divider{border-top:1px solid var(--bd);margin:1.5rem 0}
+</style>
 </head>
 <body>
-
 <nav class="navbar sticky-top">
-    <div class="container">
-        <a class="navbar-brand text-decoration-none fs-4" href="/">
-            <i class="fa-solid fa-radar fa-spin-pulse me-2"></i>八德夢想家
-        </a>
-        <div class="d-flex align-items-center gap-2">
-            <a href="/" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
-                <i class="fa-solid fa-arrow-left me-1"></i>返回首頁
-            </a>
-        </div>
-    </div>
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="fa-solid fa-tower-broadcast" style="-webkit-text-fill-color:#60a5fa"></i>八德資源網</a>
+    <a href="/" class="btn-back"><i class="fa-solid fa-arrow-left"></i>返回首頁</a>
+  </div>
 </nav>
 
-<div class="container mt-5 pt-2" style="max-width: 640px;">
+<div class="container mt-5 pt-2" style="max-width:640px">
 
-    <!-- 標題區 -->
-    <div class="text-center mb-5">
-        <div style="font-size: 3.5rem; line-height: 1; margin-bottom: 1rem;">
-            <i class="fa-solid fa-wand-magic-sparkles" style="background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+  <div class="text-center mb-5">
+    <div style="font-size:3.5rem;line-height:1;margin-bottom:1rem">
+      <i class="fa-solid fa-wand-magic-sparkles" style="background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text"></i>
+    </div>
+    <h2 class="fw-bold mb-2" style="font-size:1.8rem;letter-spacing:-.2px">許願池</h2>
+    <p class="text-secondary" style="font-size:.95rem">告訴我們你希望這個平台新增什麼功能，<br>或者有什麼地方可以做得更好。</p>
+  </div>
+
+  <div class="notice">
+    <i class="fa-solid fa-lock me-2"></i>
+    你填寫的內容<strong>只有管理員看得到</strong>，不會公開顯示給其他用戶。
+  </div>
+
+  <div id="rb-ok" class="rb" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#6ee7b7">
+    <i class="fa-solid fa-circle-check me-2"></i>已成功送出！感謝你的回饋，我們會認真考慮。
+  </div>
+  <div id="rb-err" class="rb" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5">
+    <i class="fa-solid fa-triangle-exclamation me-2"></i><span id="err-msg">送出失敗，請稍後再試。</span>
+  </div>
+
+  <div class="gc p-4 p-md-5">
+    <form id="wish-form" novalidate>
+
+      <!-- 類別 -->
+      <div class="mb-3">
+        <label class="flabel">類別 <span style="color:var(--ro)">*</span></label>
+        <select id="wish-category" class="form-ctrl">
+          <option value="合作提案" selected>合作提案</option>
+          <option value="平台功能許願">平台功能許願</option>
+        </select>
+      </div>
+
+      <!-- 暱稱 -->
+      <div class="mb-3">
+        <label class="flabel">暱稱 <span style="color:var(--t3);font-weight:400">（選填）</span></label>
+        <input type="text" id="wish-name" class="form-ctrl" placeholder="怎麼稱呼你？" maxlength="50">
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="flabel">Email <span style="color:var(--ro)">*</span></label>
+        <input type="email" id="wish-email" class="form-ctrl" placeholder="your@email.com" maxlength="100" oninput="validateEmail(this)">
+        <div id="email-hint" class="fhint" style="display:none"></div>
+        <div class="ferr" id="email-err"><i class="fa-solid fa-circle-exclamation"></i>請填寫 Email</div>
+      </div>
+
+      <!-- LINE ID + 電話 -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="flabel">LINE ID <span style="color:var(--t3);font-weight:400">（選填）</span></label>
+          <input type="text" id="wish-line" class="form-ctrl" placeholder="你的 LINE ID" maxlength="100">
         </div>
-        <h2 class="fw-bold mb-2">許願池</h2>
-        <p class="text-secondary">告訴我們你希望這個平台新增什麼功能，<br>或者有什麼地方可以做得更好。</p>
-    </div>
+        <div class="col-md-6">
+          <label class="flabel">聯絡電話 <span style="color:var(--t3);font-weight:400">（選填）</span></label>
+          <input type="tel" id="wish-phone" class="form-ctrl" placeholder="0912345678" maxlength="20" oninput="validatePhone(this)">
+          <div id="phone-hint" class="fhint" style="display:none"></div>
+        </div>
+      </div>
 
-    <!-- 注意事項 -->
-    <div class="notice-box mb-4">
-        <i class="fa-solid fa-lock me-2"></i>
-        你填寫的內容<strong>只有管理員看得到</strong>，不會公開顯示給其他用戶。
-    </div>
+      <div class="divider"></div>
 
-    <!-- 表單 -->
-    <div class="glass-card p-4 p-md-5">
-        <form id="wish-form" novalidate>
+      <!-- 內容 -->
+      <div class="mb-4">
+        <label class="flabel">內容 <span style="color:var(--ro)">*</span></label>
+        <textarea id="wish-content" class="form-ctrl" placeholder="例如：希望可以加入活動行事曆，讓居民知道最近有什麼社區活動..." maxlength="1000" oninput="updCC(this)"></textarea>
+        <div class="cc" id="cc">0 / 1000</div>
+        <div class="ferr" id="content-err"><i class="fa-solid fa-circle-exclamation"></i>請填寫內容</div>
+      </div>
 
-            <div class="row g-3 mb-3">
-                <div class="col-md-6">
-                    <label class="form-label">暱稱 <span class="text-secondary fw-normal">（選填）</span></label>
-                    <input type="text" id="wish-name" class="form-control" placeholder="怎麼稱呼你？" maxlength="50">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">聯絡方式 <span class="text-secondary fw-normal">（選填）</span></label>
-                    <input type="text" id="wish-contact" class="form-control" placeholder="Email 或 LINE ID" maxlength="100">
-                </div>
-            </div>
+      <!-- 驗證碼 -->
+      <div class="mb-4">
+        <label class="flabel">驗證碼 <span style="color:var(--ro)">*</span></label>
+        <div class="captcha-box">
+          <div class="captcha-q" id="captcha-q">— + — = ?</div>
+          <button type="button" class="captcha-refresh" onclick="genCaptcha()" title="換一題"><i class="fa-solid fa-rotate-right"></i></button>
+          <input type="text" id="wish-captcha" class="form-ctrl" placeholder="輸入答案" maxlength="4" inputmode="numeric" style="max-width:120px">
+        </div>
+        <div class="ferr" id="captcha-err"><i class="fa-solid fa-circle-exclamation"></i>驗證碼錯誤，請重新輸入</div>
+      </div>
 
-            <div class="mb-4">
-                <label class="form-label">許願內容 <span class="text-danger">*</span></label>
-                <textarea id="wish-content" class="form-control" placeholder="例如：希望可以加入活動行事曆，讓居民知道最近有什麼社區活動..." maxlength="1000"></textarea>
-                <div class="char-count" id="char-count">0 / 1000</div>
-                <div class="invalid-feedback">請填寫許願內容</div>
-            </div>
+      <button type="submit" class="btn-sub" id="btn-sub">
+        <i class="fa-solid fa-paper-plane"></i>送出
+      </button>
+    </form>
+  </div>
 
-            <!-- 送出結果 -->
-            <div id="result-box" class="mb-4 p-3 rounded-3 text-center fw-medium" role="alert"></div>
-
-            <div class="d-grid">
-                <button type="submit" class="btn btn-submit text-white" id="btn-submit">
-                    <i class="fa-solid fa-paper-plane me-2"></i>送出許願
-                </button>
-            </div>
-
-        </form>
-    </div>
+  <div style="margin-top:1.5rem;text-align:center;padding-bottom:2rem">
+    <p class="text-secondary" style="font-size:.84rem">有更緊急的事情嗎？<a href="mailto:kunchelau@gmail.com" style="color:var(--pl);text-decoration:none">聯絡我們 →</a></p>
+  </div>
 
 </div>
 
 <script>
-    const contentEl  = document.getElementById('wish-content');
-    const charCount  = document.getElementById('char-count');
-    const form       = document.getElementById('wish-form');
-    const resultBox  = document.getElementById('result-box');
-    const submitBtn  = document.getElementById('btn-submit');
+// ── 字數計數 ──────────────────────────────────────────────────
+function updCC(el){
+  const n=el.value.length,c=document.getElementById('cc');
+  c.textContent=n+' / 1000';
+  c.className='cc'+(n>900?' d':n>700?' w':'');
+}
 
-    contentEl.addEventListener('input', () => {
-        const len = contentEl.value.length;
-        charCount.textContent = `${len} / 1000`;
-        charCount.className = 'char-count' + (len > 900 ? ' danger' : len > 700 ? ' warning' : '');
+// ── Email 驗證 ────────────────────────────────────────────────
+function validateEmail(el){
+  const v=el.value.trim();
+  const hint=document.getElementById('email-hint');
+  const err=document.getElementById('email-err');
+  err.style.display='none';
+  if(!v){el.className='form-ctrl';hint.style.display='none';return;}
+  const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  if(ok){
+    el.className='form-ctrl ok';
+    hint.style.display='block';
+    hint.innerHTML='<span style="color:#34d399"><i class="fa-solid fa-circle-check me-1"></i>格式正確</span>';
+  } else {
+    el.className='form-ctrl err';
+    hint.style.display='block';
+    hint.innerHTML='<span style="color:var(--ro)"><i class="fa-solid fa-circle-exclamation me-1"></i>請輸入有效的 Email 地址</span>';
+  }
+}
+
+// ── 電話驗證 ──────────────────────────────────────────────────
+function validatePhone(el){
+  const v=el.value.trim();
+  const hint=document.getElementById('phone-hint');
+  el.value=el.value.replace(/[^\d]/g,'');
+  if(!v){el.className='form-ctrl';hint.style.display='none';return;}
+  if(/^\d{6,15}$/.test(v)){
+    el.className='form-ctrl ok';
+    hint.style.display='block';
+    hint.innerHTML='<span style="color:#34d399"><i class="fa-solid fa-circle-check me-1"></i>格式正確</span>';
+  } else {
+    el.className='form-ctrl err';
+    hint.style.display='block';
+    hint.innerHTML='<span style="color:var(--ro)"><i class="fa-solid fa-circle-exclamation me-1"></i>請輸入有效的電話號碼</span>';
+  }
+}
+
+// ── 驗證碼 ────────────────────────────────────────────────────
+let captchaAnswer=0;
+function genCaptcha(){
+  const a=Math.floor(Math.random()*20)+1;
+  const b=Math.floor(Math.random()*20)+1;
+  const ops=[
+    {q:`${a} + ${b}`,ans:a+b},
+    {q:`${a+b} − ${b}`,ans:a},
+    {q:`${a} × ${b<=5?b:2}`,ans:a*(b<=5?b:2)},
+  ];
+  const pick=ops[Math.floor(Math.random()*ops.length)];
+  captchaAnswer=pick.ans;
+  document.getElementById('captcha-q').textContent=pick.q+' = ?';
+  document.getElementById('wish-captcha').value='';
+  document.getElementById('captcha-err').style.display='none';
+  document.getElementById('wish-captcha').classList.remove('err');
+}
+
+// ── 表單送出 ──────────────────────────────────────────────────
+document.getElementById('wish-form').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+
+  const email   = document.getElementById('wish-email').value.trim();
+  const content = document.getElementById('wish-content').value.trim();
+  const captcha = document.getElementById('wish-captcha').value.trim();
+  const btn     = document.getElementById('btn-sub');
+
+  // 清除舊提示
+  document.getElementById('rb-ok').style.display='none';
+  document.getElementById('rb-err').style.display='none';
+  document.getElementById('email-err').style.display='none';
+  document.getElementById('content-err').style.display='none';
+  document.getElementById('captcha-err').style.display='none';
+
+  let hasErr=false;
+
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    document.getElementById('wish-email').classList.add('err');
+    document.getElementById('email-hint').style.display='none';
+    document.getElementById('email-err').style.display='block';
+    document.getElementById('email-err').innerHTML='<i class="fa-solid fa-circle-exclamation me-1"></i>'+(email?'請輸入有效的 Email 地址':'請填寫 Email');
+    hasErr=true;
+  }
+
+  if(!content){
+    document.getElementById('wish-content').classList.add('err');
+    document.getElementById('content-err').style.display='block';
+    hasErr=true;
+  } else {
+    document.getElementById('wish-content').classList.remove('err');
+  }
+
+  if(!captcha||parseInt(captcha,10)!==captchaAnswer){
+    document.getElementById('wish-captcha').classList.add('err');
+    document.getElementById('captcha-err').style.display='block';
+    hasErr=true;
+  } else {
+    document.getElementById('wish-captcha').classList.remove('err');
+  }
+
+  if(hasErr){if(!email)document.getElementById('wish-email').focus();return;}
+
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>送出中...';
+
+  try{
+    const res=await fetch('/api/wish',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:    document.getElementById('wish-name').value.trim(),
+        email,
+        line_id: document.getElementById('wish-line').value.trim(),
+        phone:   document.getElementById('wish-phone').value.trim(),
+        category:document.getElementById('wish-category').value,
+        content
+      })
     });
+    const data=await res.json();
+    if(data.ok){
+      document.getElementById('rb-ok').style.display='block';
+      document.getElementById('wish-form').reset();
+      document.getElementById('wish-category').value='合作提案';
+      document.getElementById('cc').textContent='0 / 1000';
+      document.getElementById('cc').className='cc';
+      document.querySelectorAll('.form-ctrl').forEach(el=>el.className='form-ctrl');
+      document.querySelectorAll('.fhint').forEach(el=>el.style.display='none');
+      genCaptcha();
+      window.scrollTo({top:0,behavior:'smooth'});
+    } else {throw new Error(data.error||'送出失敗');}
+  }catch(err){
+    document.getElementById('err-msg').textContent=err.message||'送出失敗，請稍後再試。';
+    document.getElementById('rb-err').style.display='block';
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i>送出';
+  }
+});
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const content = contentEl.value.trim();
-        if (!content) {
-            contentEl.classList.add('is-invalid');
-            contentEl.focus();
-            return;
-        }
-        contentEl.classList.remove('is-invalid');
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>送出中...';
-        resultBox.style.display = 'none';
-
-        try {
-            const res = await fetch('/api/wish', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name:    document.getElementById('wish-name').value.trim(),
-                    contact: document.getElementById('wish-contact').value.trim(),
-                    content: content,
-                })
-            });
-            const data = await res.json();
-
-            if (data.ok) {
-                resultBox.style.display = 'block';
-                resultBox.className = 'mb-4 p-3 rounded-3 text-center fw-medium';
-                resultBox.style.background = 'rgba(16, 185, 129, 0.12)';
-                resultBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-                resultBox.style.color = '#6ee7b7';
-                resultBox.innerHTML = '<i class="fa-solid fa-circle-check me-2"></i>許願已送出！感謝你的回饋，我們會認真考慮。';
-                form.reset();
-                charCount.textContent = '0 / 1000';
-                charCount.className = 'char-count';
-            } else {
-                throw new Error(data.error || '送出失敗');
-            }
-        } catch (err) {
-            resultBox.style.display = 'block';
-            resultBox.className = 'mb-4 p-3 rounded-3 text-center fw-medium';
-            resultBox.style.background = 'rgba(239, 68, 68, 0.12)';
-            resultBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
-            resultBox.style.color = '#fca5a5';
-            resultBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-2"></i>${err.message}`;
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>送出許願';
-        }
-    });
+// 初始化驗證碼
+genCaptcha();
 </script>
-
+<!-- LINE 浮動按鈕 -->
+<a href="#" id="line-fab" title="加 LINE 好友" target="_blank" rel="noopener" style="position:fixed;bottom:28px;right:24px;z-index:999;width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:#06C755;color:#fff;text-decoration:none;border-radius:50%;box-shadow:0 4px 20px rgba(6,199,85,.5);transition:all .2s"><i class="fa-brands fa-line" style="font-size:1.6rem"></i></a>
+<style>#line-fab:hover{background:#05a744!important;transform:scale(1.1);box-shadow:0 6px 28px rgba(6,199,85,.65)}</style>
 </body>
 </html>

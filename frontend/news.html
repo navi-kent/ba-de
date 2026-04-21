@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>最新消息 — 八德資源網</title>
+<meta name="description" content="八德資源網最新消息，掌握八德區最新公告與活動資訊。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+:root{--bg:#0b0f19;--cb:rgba(22,27,34,.65);--bd:rgba(255,255,255,.08);--p:#3b82f6;--pd:#2563eb;--pl:#60a5fa;--pg:rgba(59,130,246,.4);--t1:#f8fafc;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--r:8px;--rm:12px;--rl:16px;--f:"Inter","Noto Sans TC",-apple-system,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20% -10%,rgba(59,130,246,.12),transparent 60%);background-attachment:fixed;color:#e2e8f0;font-family:var(--f);font-size:16px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
+.navbar{background:rgba(11,15,25,.82)!important;backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:.75rem 0}
+.navbar-brand{font-weight:800;font-size:1.15rem;background:linear-gradient(135deg,#60a5fa,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.nlp{color:var(--t2);text-decoration:none;font-size:.88rem;font-weight:500;padding:.38rem .85rem;border-radius:999px;border:1px solid transparent;transition:all .15s}
+.nlp:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+.nlp.on{color:var(--pl);background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3)}
+.breadcrumb{background:transparent;padding:0;margin:0;font-size:.84rem}
+.breadcrumb-item a{color:var(--t3);text-decoration:none;transition:color .15s}.breadcrumb-item a:hover{color:var(--pl)}
+.breadcrumb-item.active{color:var(--t2)}.breadcrumb-item+.breadcrumb-item::before{color:var(--t4)}
+.page-hd{padding:2.5rem 0 2rem;border-bottom:1px solid var(--bd);margin-bottom:2rem;position:relative;overflow:hidden}
+.page-hd::before{content:'';position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(59,130,246,.06),transparent 60%);pointer-events:none}
+.ph-lbl{font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--p);text-transform:uppercase;margin-bottom:.5rem}
+.ph-title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:var(--t1);letter-spacing:-.3px}
+.ph-sub{color:var(--t3);font-size:.93rem;margin-top:.3rem}
+.cat-tab{padding:.38rem 1.05rem;border-radius:999px;font-size:.85rem;font-weight:600;color:var(--t2);background:rgba(30,41,59,.6);border:1px solid var(--bd);cursor:pointer;transition:all .15s;font-family:var(--f)}
+.cat-tab:hover{color:var(--t1);border-color:rgba(255,255,255,.2)}
+.cat-tab.on{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 0 12px var(--pg)}
+.nc{background:var(--cb);border:1px solid var(--bd);border-radius:var(--rm);overflow:hidden;display:flex;flex-direction:column;height:100%;transition:all .25s}
+.nc:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.4),0 0 20px rgba(59,130,246,.2);border-color:rgba(59,130,246,.4)}
+.nc-img{width:100%;height:190px;background:linear-gradient(135deg,rgba(30,41,59,.9),rgba(15,23,42,.9));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.nc-img img{width:100%;height:100%;object-fit:cover}
+.nc-body{padding:1.15rem;display:flex;flex-direction:column;flex:1}
+.cat-badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.22rem .65rem;border-radius:6px;background:rgba(59,130,246,.15);color:var(--pl);border:1px solid rgba(59,130,246,.3);text-transform:uppercase;letter-spacing:.5px}
+.nc-title{font-size:.97rem;font-weight:600;color:var(--t1);line-height:1.55;margin:.5rem 0 .4rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none;transition:color .15s}
+.nc-title:hover{color:var(--pl)}
+.nc-sum{font-size:.83rem;color:var(--t3);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+.nc-foot{margin-top:.8rem;padding-top:.75rem;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.nc-date{font-size:.76rem;color:var(--t4)}
+.nc-link{font-size:.78rem;color:var(--p);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;transition:all .15s}
+.nc-link:hover{color:var(--pl);gap:.5rem}
+.pg-btn{min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--r);font-size:.88rem;font-weight:600;background:rgba(30,41,59,.6);border:1px solid var(--bd);color:var(--t2);cursor:pointer;padding:0 .5rem;transition:all .15s;font-family:var(--f)}
+.pg-btn:hover:not(:disabled):not(.on){background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35);color:var(--pl)}
+.pg-btn.on{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 0 10px var(--pg)}
+.pg-btn:disabled{opacity:.3;cursor:not-allowed}
+.skeleton{background:linear-gradient(90deg,rgba(30,41,59,.6) 25%,rgba(51,65,85,.6) 50%,rgba(30,41,59,.6) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+</style>
+</head>
+<body>
+<nav class="navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="fa-solid fa-tower-broadcast" style="-webkit-text-fill-color:#60a5fa"></i>八德資源網</a>
+    <div class="d-flex align-items-center gap-1 flex-wrap">
+      <a href="/" class="nlp">首頁</a>
+      <a href="/news" class="nlp on">最新消息</a>
+      <a href="/news-feed" class="nlp">新聞消息</a>
+      <a href="/wish" class="btn btn-sm btn-outline-primary rounded-pill px-3 ms-1" style="font-size:.84rem"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>許願池</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <nav aria-label="breadcrumb" style="padding:.8rem 0 0">
+    <ol class="breadcrumb mb-0"><li class="breadcrumb-item"><a href="/"><i class="fa-solid fa-house me-1"></i>首頁</a></li><li class="breadcrumb-item active">最新消息</li></ol>
+  </nav>
+
+  <div class="page-hd">
+    <div class="ph-lbl"><i class="fa-solid fa-bullhorn me-1"></i>NEWS</div>
+    <h1 class="ph-title">最新消息</h1>
+    <p class="ph-sub">八德區最新公告、活動與重要資訊</p>
+  </div>
+
+  <div id="cat-row" class="d-flex flex-wrap gap-2 mb-4">
+    <button class="cat-tab on" data-cat="all">全部</button>
+  </div>
+
+  <div class="row g-4 mb-5" id="news-grid">
+    <div class="col-md-6 col-lg-4"><div class="nc"><div class="nc-img"><div class="skeleton" style="width:100%;height:100%"></div></div><div class="nc-body"><div class="skeleton" style="height:12px;width:60px;margin-bottom:10px"></div><div class="skeleton" style="height:16px;margin-bottom:6px"></div><div class="skeleton" style="height:16px;width:80%"></div></div></div></div>
+    <div class="col-md-6 col-lg-4"><div class="nc"><div class="nc-img"><div class="skeleton" style="width:100%;height:100%"></div></div><div class="nc-body"><div class="skeleton" style="height:12px;width:60px;margin-bottom:10px"></div><div class="skeleton" style="height:16px;margin-bottom:6px"></div><div class="skeleton" style="height:16px;width:80%"></div></div></div></div>
+    <div class="col-md-6 col-lg-4"><div class="nc"><div class="nc-img"><div class="skeleton" style="width:100%;height:100%"></div></div><div class="nc-body"><div class="skeleton" style="height:12px;width:60px;margin-bottom:10px"></div><div class="skeleton" style="height:16px;margin-bottom:6px"></div><div class="skeleton" style="height:16px;width:80%"></div></div></div></div>
+  </div>
+
+  <div class="d-flex justify-content-center mt-2 mb-4" id="pagination-wrap" style="display:none!important">
+    <div class="d-flex align-items-center gap-2" id="pagination"></div>
+  </div>
+</div>
+
+<script>
+let currentPage=1,currentCat='all',totalPages=1;
+
+function fmtDate(s){if(!s)return '';return new Date(s).toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});}
+
+const catColors={活動:'background:rgba(52,211,153,.15);color:#34d399;border-color:rgba(52,211,153,.3)',工程:'background:rgba(251,191,36,.15);color:#fbbf24;border-color:rgba(251,191,36,.3)',交通:'background:rgba(251,113,133,.15);color:#fb7185;border-color:rgba(251,113,133,.3)',民生:'background:rgba(167,139,250,.15);color:#a78bfa;border-color:rgba(167,139,250,.3)'};
+
+function renderCard(it){
+  const bs=catColors[it.category]||'';
+  const img=it.cover_image?`<div class="nc-img"><img src="${it.cover_image}" alt="${it.title}" loading="lazy"></div>`:`<div class="nc-img"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>`;
+  return `<div class="col-md-6 col-lg-4"><div class="nc">${img}<div class="nc-body"><span class="cat-badge" style="${bs}">${it.category||'一般'}</span><a href="/news/${it.slug}" class="nc-title d-block">${it.title}</a>${it.summary?`<p class="nc-sum">${it.summary}</p>`:''}<div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>${fmtDate(it.published_at)}</span><a href="/news/${it.slug}" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div></div></div></div>`;
+}
+
+function buildPageRange(cur,total){
+  if(total<=7)return Array.from({length:total},(_,i)=>i+1);
+  const p=[];
+  if(cur<=4){for(let i=1;i<=5;i++)p.push(i);p.push('...');p.push(total);}
+  else if(cur>=total-3){p.push(1);p.push('...');for(let i=total-4;i<=total;i++)p.push(i);}
+  else{p.push(1);p.push('...');for(let i=cur-1;i<=cur+1;i++)p.push(i);p.push('...');p.push(total);}
+  return p;
+}
+
+function renderPagination(){
+  const wrap=document.getElementById('pagination-wrap');
+  if(totalPages<=1){wrap.style.display='none';return;}
+  wrap.style.display='';
+  let html=`<button class="pg-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>`;
+  buildPageRange(currentPage,totalPages).forEach(p=>{
+    if(p==='...')html+=`<button class="pg-btn" style="cursor:default;opacity:.4">…</button>`;
+    else html+=`<button class="pg-btn ${p===currentPage?'on':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html+=`<button class="pg-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>`;
+  document.getElementById('pagination').innerHTML=html;
+}
+
+function goPage(p){if(p<1||p>totalPages)return;currentPage=p;loadNews();window.scrollTo({top:0,behavior:'smooth'});}
+
+function setTab(el,cat){
+  document.querySelectorAll('#cat-row .cat-tab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  currentCat=cat;currentPage=1;loadNews();
+}
+
+async function loadNews(){
+  const grid=document.getElementById('news-grid');
+  grid.innerHTML=Array(6).fill(0).map(()=>`<div class="col-md-6 col-lg-4"><div class="nc"><div class="nc-img"><div class="skeleton" style="width:100%;height:100%"></div></div><div class="nc-body"><div class="skeleton" style="height:12px;width:60px;margin-bottom:10px"></div><div class="skeleton" style="height:16px;margin-bottom:6px"></div><div class="skeleton" style="height:16px;width:80%"></div></div></div></div>`).join('');
+  try{
+    const params=new URLSearchParams({category:currentCat,page:currentPage,limit:9});
+    const d=await fetch(`/api/announcements?${params}`).then(r=>r.json());
+    totalPages=d.total_pages||1;
+    if(document.querySelectorAll('#cat-row .cat-tab').length===1&&d.categories&&d.categories.length){
+      d.categories.forEach(cat=>{
+        const btn=document.createElement('button');
+        btn.className='cat-tab';btn.dataset.cat=cat;btn.textContent=cat;
+        btn.onclick=function(){setTab(this,cat);};
+        document.getElementById('cat-row').appendChild(btn);
+      });
+    }
+    if(!d.items||!d.items.length){
+      grid.innerHTML=`<div class="col-12 text-center py-5 text-secondary"><i class="fa-solid fa-inbox fs-1 mb-3 d-block" style="opacity:.3"></i>目前尚無消息</div>`;
+      document.getElementById('pagination-wrap').style.display='none';return;
+    }
+    grid.innerHTML=d.items.map(renderCard).join('');
+    renderPagination();
+  }catch(e){grid.innerHTML=`<div class="col-12 text-center py-5 text-danger">載入失敗，請稍後再試</div>`;}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelector('#cat-row .cat-tab').addEventListener('click',function(){setTab(this,'all');});
+  loadNews();
+});
+</script>
+<!-- LINE 浮動按鈕 -->
+<a href="#" id="line-fab" title="加 LINE 好友" target="_blank" rel="noopener" style="position:fixed;bottom:28px;right:24px;z-index:999;width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:#06C755;color:#fff;text-decoration:none;border-radius:50%;box-shadow:0 4px 20px rgba(6,199,85,.5);transition:all .2s"><i class="fa-brands fa-line" style="font-size:1.6rem"></i></a>
+<style>#line-fab:hover{background:#05a744!important;transform:scale(1.1);box-shadow:0 6px 28px rgba(6,199,85,.65)}</style>
+</body>
+</html>

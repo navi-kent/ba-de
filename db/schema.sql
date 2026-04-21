@@ -52,11 +52,44 @@ CREATE TABLE IF NOT EXISTS scraper_runs (
 );
 
 
+-- 最新消息（手動管理）
+CREATE TABLE IF NOT EXISTS announcements (
+    id               SERIAL PRIMARY KEY,
+    title            TEXT NOT NULL,
+    slug             VARCHAR(255) UNIQUE NOT NULL,
+    category         VARCHAR(50) DEFAULT '一般',
+    summary          TEXT,
+    content          TEXT,
+    meta_description TEXT,
+    cover_image      TEXT,
+    is_published     BOOLEAN DEFAULT FALSE,
+    published_at     TIMESTAMPTZ DEFAULT NOW(),
+    updated_at       TIMESTAMPTZ DEFAULT NOW(),
+    created_at       TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_announcements_slug ON announcements(slug);
+CREATE INDEX IF NOT EXISTS idx_announcements_pub ON announcements(published_at DESC) WHERE is_published = TRUE;
+
+
+-- 訪客計數器
+CREATE TABLE IF NOT EXISTS visitors (
+    id         SERIAL PRIMARY KEY,
+    ip         INET,
+    visited_at TIMESTAMPTZ DEFAULT NOW()
+);
+-- 同一 IP 當天只計算一次（用 expression index 取出 date 部分）
+CREATE UNIQUE INDEX IF NOT EXISTS idx_visitors_ip_date ON visitors (ip, (visited_at::date));
+
+
 -- 許願池留言
 CREATE TABLE IF NOT EXISTS wishes (
     id         SERIAL PRIMARY KEY,
     name       VARCHAR(50),
     contact    VARCHAR(100),
+    category   VARCHAR(30) NOT NULL DEFAULT '合作提案',
+    email      VARCHAR(100),
+    line_id    VARCHAR(100),
+    phone      VARCHAR(20),
     content    TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     ip         VARCHAR(45)

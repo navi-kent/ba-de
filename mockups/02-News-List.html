@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>最新消息 — 八德夢想家</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+:root{--bg:#0b0f19;--cb:rgba(22,27,34,.65);--bd:rgba(255,255,255,.08);--p:#3b82f6;--pd:#2563eb;--pl:#60a5fa;--pg:rgba(59,130,246,.4);--t1:#f8fafc;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--r:8px;--rm:12px;--rl:16px;--f:"Inter","Noto Sans TC",-apple-system,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20% -10%,rgba(59,130,246,.12),transparent 60%);background-attachment:fixed;color:#e2e8f0;font-family:var(--f);font-size:16px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+.navbar{background:rgba(11,15,25,.82)!important;backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:.75rem 0}
+.navbar-brand{font-weight:800;font-size:1.15rem;background:linear-gradient(135deg,#60a5fa,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.nlp{color:var(--t2);text-decoration:none;font-size:.88rem;font-weight:500;padding:.38rem .85rem;border-radius:999px;border:1px solid transparent;transition:all .15s;display:inline-flex;align-items:center;gap:.3rem}
+.nlp:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+.nlp.on{color:var(--pl);background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3)}
+.breadcrumb{background:transparent;padding:0;margin:0;font-size:.84rem}
+.breadcrumb-item a{color:var(--t3);text-decoration:none;transition:color .15s}.breadcrumb-item a:hover{color:var(--pl)}
+.breadcrumb-item.active{color:var(--t2)}.breadcrumb-item+.breadcrumb-item::before{color:var(--t4)}
+.page-hd{padding:2.5rem 0 2rem;border-bottom:1px solid var(--bd);margin-bottom:2rem;position:relative;overflow:hidden}
+.page-hd::before{content:'';position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(59,130,246,.06),transparent 60%);pointer-events:none}
+.ph-lbl{font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--p);text-transform:uppercase;margin-bottom:.5rem}
+.ph-title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:var(--t1);letter-spacing:-.3px}
+.ph-sub{color:var(--t3);font-size:.93rem;margin-top:.3rem}
+.cat-tab{padding:.38rem 1.05rem;border-radius:999px;font-size:.85rem;font-weight:600;color:var(--t2);background:rgba(30,41,59,.6);border:1px solid var(--bd);cursor:pointer;transition:all .15s;font-family:var(--f)}
+.cat-tab:hover{color:var(--t1);border-color:rgba(255,255,255,.2)}
+.cat-tab.on{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 0 12px var(--pg)}
+.nc{background:var(--cb);border:1px solid var(--bd);border-radius:var(--rm);overflow:hidden;display:flex;flex-direction:column;height:100%;transition:all .25s}
+.nc:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.4),0 0 20px rgba(59,130,246,.2);border-color:rgba(59,130,246,.4)}
+.nc-img{width:100%;height:190px;background:linear-gradient(135deg,rgba(30,41,59,.9),rgba(15,23,42,.9));display:flex;align-items:center;justify-content:center}
+.nc-body{padding:1.15rem;display:flex;flex-direction:column;flex:1}
+.cat-badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.22rem .65rem;border-radius:6px;background:rgba(59,130,246,.15);color:var(--pl);border:1px solid rgba(59,130,246,.3);text-transform:uppercase;letter-spacing:.5px}
+.nc-title{font-size:.97rem;font-weight:600;color:var(--t1);line-height:1.55;margin:.5rem 0 .4rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none;transition:color .15s}
+.nc-title:hover{color:var(--pl)}
+.nc-sum{font-size:.83rem;color:var(--t3);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+.nc-foot{margin-top:.8rem;padding-top:.75rem;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.nc-date{font-size:.76rem;color:var(--t4)}
+.nc-link{font-size:.78rem;color:var(--p);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;transition:all .15s}
+.nc-link:hover{color:var(--pl);gap:.5rem}
+.pg-btn{min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--r);font-size:.88rem;font-weight:600;background:rgba(30,41,59,.6);border:1px solid var(--bd);color:var(--t2);cursor:pointer;padding:0 .5rem;transition:all .15s;font-family:var(--f)}
+.pg-btn:hover:not(:disabled):not(.on){background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35);color:var(--pl)}
+.pg-btn.on{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 0 10px var(--pg)}
+</style>
+</head>
+<body>
+<nav class="navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="01-Homepage.html"><i class="fa-solid fa-tower-broadcast" style="-webkit-text-fill-color:#60a5fa"></i>八德夢想家</a>
+    <div class="d-flex align-items-center gap-1 flex-wrap">
+      <a href="01-Homepage.html" class="nlp">首頁</a>
+      <a href="#" class="nlp on">最新消息</a>
+      <a href="04-News-Feed.html" class="nlp">新聞消息</a>
+      <a href="05-Wish.html" class="btn btn-sm btn-outline-primary rounded-pill px-3 ms-1" style="font-size:.84rem"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>許願池</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <nav aria-label="breadcrumb" style="padding:.8rem 0 0">
+    <ol class="breadcrumb mb-0"><li class="breadcrumb-item"><a href="01-Homepage.html"><i class="fa-solid fa-house me-1"></i>首頁</a></li><li class="breadcrumb-item active">最新消息</li></ol>
+  </nav>
+
+  <div class="page-hd">
+    <div class="ph-lbl"><i class="fa-solid fa-bullhorn me-1"></i>NEWS</div>
+    <h1 class="ph-title">最新消息</h1>
+    <p class="ph-sub">八德區最新公告、活動與重要資訊</p>
+  </div>
+
+  <!-- §4.3.8 Category Filter -->
+  <div id="cat-row" class="d-flex flex-wrap gap-2 mb-4">
+    <button class="cat-tab on" onclick="setTab(this,'all')">全部</button>
+    <button class="cat-tab" onclick="setTab(this,'公告')">公告</button>
+    <button class="cat-tab" onclick="setTab(this,'活動')">活動</button>
+    <button class="cat-tab" onclick="setTab(this,'工程')">工程</button>
+    <button class="cat-tab" onclick="setTab(this,'交通')">交通</button>
+    <button class="cat-tab" onclick="setTab(this,'民生')">民生</button>
+  </div>
+
+  <div class="row g-4 mb-5" id="news-grid">
+    <!-- Row 1 -->
+    <div class="col-md-6 col-lg-4">
+      <div class="nc">
+        <div class="nc-img"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body"><span class="cat-badge">公告</span><a href="03-News-Detail.html" class="nc-title d-block">八德區捷運綠線延伸工程最新進度公告</a><p class="nc-sum">桃園市政府交通局發布最新公告，捷運綠線八德段預計2026年底完工通車。</p><div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/04/15</span><a href="03-News-Detail.html" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="nc">
+        <div class="nc-img" style="background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(15,23,42,.9))"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body"><span class="cat-badge" style="background:rgba(52,211,153,.15);color:#34d399;border-color:rgba(52,211,153,.3)">活動</span><a href="#" class="nc-title d-block">2026 八德春季社區運動會報名開始</a><p class="nc-sum">春季社區運動會將於5月3日舉行，活動包含健走、趣味競賽，歡迎全家大小踴躍參加。</p><div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/04/10</span><a href="#" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="nc">
+        <div class="nc-img" style="background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(15,23,42,.9))"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body"><span class="cat-badge" style="background:rgba(251,191,36,.15);color:#fbbf24;border-color:rgba(251,191,36,.3)">工程</span><a href="#" class="nc-title d-block">大湳市場周邊道路整修工程完工通知</a><p class="nc-sum">歷時三個月的道路整修工程已全部完工，即日起全線開放通行，感謝居民配合。</p><div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/04/08</span><a href="#" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div></div>
+      </div>
+    </div>
+    <!-- Row 2 -->
+    <div class="col-md-6 col-lg-4">
+      <div class="nc">
+        <div class="nc-img" style="background:linear-gradient(135deg,rgba(251,113,133,.1),rgba(15,23,42,.9))"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body"><span class="cat-badge" style="background:rgba(251,113,133,.15);color:#fb7185;border-color:rgba(251,113,133,.3)">交通</span><a href="#" class="nc-title d-block">八德區新增YouBike 2.0站點公告</a><p class="nc-sum">交通局公告，八德區將新增6處YouBike 2.0站點，預計5月底完成設置。</p><div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/04/05</span><a href="#" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="nc">
+        <div class="nc-img" style="background:linear-gradient(135deg,rgba(167,139,250,.1),rgba(15,23,42,.9))"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body"><span class="cat-badge" style="background:rgba(167,139,250,.15);color:#a78bfa;border-color:rgba(167,139,250,.3)">民生</span><a href="#" class="nc-title d-block">八德區衛生所春季免費健檢活動開放報名</a><p class="nc-sum">春季免費健檢活動開放報名，項目包含血糖、血壓、BMI等基本健康指數檢測。</p><div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/03/28</span><a href="#" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="nc">
+        <div class="nc-img"><i class="fa-regular fa-image" style="font-size:2rem;color:rgba(255,255,255,.15)"></i></div>
+        <div class="nc-body"><span class="cat-badge">公告</span><a href="#" class="nc-title d-block">八德擴大都市計畫草案公開展覽通知</a><p class="nc-sum">八德擴大都市計畫草案即日起至5月15日公開展覽，歡迎各界提出意見。</p><div class="nc-foot"><span class="nc-date"><i class="fa-regular fa-calendar me-1"></i>2026/03/20</span><a href="#" class="nc-link">閱讀全文 <i class="fa-solid fa-arrow-right"></i></a></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-2">
+    <div class="d-flex align-items-center gap-2">
+      <button class="pg-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="pg-btn on">1</button>
+      <button class="pg-btn" onclick="this.className='pg-btn on';this.parentElement.querySelectorAll('.pg-btn').forEach(b=>{if(b!==this)b.classList.remove('on')})">2</button>
+      <button class="pg-btn" onclick="this.className='pg-btn on';this.parentElement.querySelectorAll('.pg-btn').forEach(b=>{if(b!==this)b.classList.remove('on')})">3</button>
+      <button class="pg-btn" style="opacity:.4;cursor:default">…</button>
+      <button class="pg-btn">8</button>
+      <button class="pg-btn"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<script>
+function setTab(el,cat){
+  document.querySelectorAll('#cat-row .cat-tab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+</script>
+</body>
+</html>

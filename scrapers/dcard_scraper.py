@@ -1,4 +1,10 @@
 """Dcard 爬蟲
+
+使用 Dcard 官方公開 REST API v2 抓取文章，不需登入、不需 API key。
+目前監控 mood / trending / relationship 三個看板。
+
+注意：此爬蟲已寫好但尚未加入排程，需手動執行或加入 scraper plist。
+
 使用方式：python scrapers/dcard_scraper.py
 """
 import json
@@ -10,19 +16,33 @@ from utils import get_db_connection, load_search_config, log_run_start, log_run_
 SCRAPER_NAME = "dcard"
 DCARD_API    = "https://www.dcard.tw/service/api/v2"
 HEADERS      = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
-FORUMS       = ["mood", "trending", "relationship"]
+FORUMS       = ["mood", "trending", "relationship"]  # 監控的看板，可在此新增
 
 CONFIG   = load_search_config()
 LOCATION = CONFIG["location"]
 
 
 def should_keep_post(title: str, content: str) -> bool:
-    keywords = [LOCATION["city"], LOCATION["district"], "八德"]
+    """標題或內文必須含八德/霄裡/大湳其中之一才保留。
+
+    注意：Dcard API 已遭 Cloudflare 保護（403），
+    此爬蟲目前無法正常運作，建議改用其他替代方案（如 PTT）。
+    """
+    keywords = ["八德", "霄裡", "大湳"]
     text = f"{title} {content}".lower()
     return any(kw in text for kw in keywords)
 
 
 def fetch_forum_posts(forum: str, limit: int = 30) -> list:
+    """抓取看板最新文章列表（只含摘要，不含完整內文）。
+
+    Args:
+        forum: 看板 ID（如 "mood"）
+        limit: 最多抓幾篇（Dcard API 上限約 30）
+
+    Returns:
+        list of post dict（含 id, title, excerpt, likeCount, commentCount 等）
+    """
     try:
         resp = requests.get(
             f"{DCARD_API}/forums/{forum}/posts",
@@ -38,6 +58,13 @@ def fetch_forum_posts(forum: str, limit: int = 30) -> list:
 
 
 def fetch_post_detail(post_id: int) -> dict:
+    """抓取單篇文章完整內容（含 content 全文）。
+
+    列表 API 只回傳 excerpt（前幾句），完整內文需另打此 API。
+
+    Returns:
+        完整 post dict，失敗時回傳空 dict
+    """
     try:
         resp = requests.get(f"{DCARD_API}/posts/{post_id}", headers=HEADERS, timeout=10)
         resp.raise_for_status()
@@ -48,6 +75,13 @@ def fetch_post_detail(post_id: int) -> dict:
 
 
 def insert_post(conn, post: dict, forum: str) -> bool:
+    """將單篇 Dcard 文章寫入 raw_posts。
+
+    author 欄位存放學校名稱（Dcard 匿名機制，只顯示學校不顯示個人）。
+
+    Returns:
+        True 代表實際新增，False 代表重複略過
+    """
     with conn.cursor() as cur:
         cur.execute(
             """INSERT INTO raw_posts
@@ -57,9 +91,9 @@ def insert_post(conn, post: dict, forum: str) -> bool:
                ON CONFLICT (source, post_id) DO NOTHING""",
             (
                 "dcard",
-                forum,
-                str(post["id"]),
-                post.get("school"),
+                forum,                     # source_account 記錄看板名稱
+                str(post["id"]),           # Dcard 文章 ID（數字，轉字串統一格式）
+                post.get("school"),        # 作者學校（匿名制）
                 post.get("title"),
                 post.get("content", ""),
                 f"https://www.dcard.tw/f/{forum}/p/{post['id']}",
@@ -87,18 +121,22 @@ def run():
             print(f"  → 找到 {len(posts)} 篇文章")
 
             for post in posts:
+                # 第一道過濾：用列表的 excerpt 快速篩（避免對每篇都打內文 API）
                 if not should_keep_post(post.get("title", ""), post.get("excerpt", "")):
                     continue
+
+                # 抓完整內文後再做第二道過濾（excerpt 可能截斷關鍵詞）
                 detail = fetch_post_detail(post["id"])
                 if not detail:
                     continue
                 if not should_keep_post(detail.get("title", ""), detail.get("content", "")):
                     continue
+
                 if insert_post(conn, detail, forum):
                     total_inserted += 1
                     print(f"  ✅ {detail['title'][:30]}...")
                 total_found += 1
-                time.sleep(0.3)
+                time.sleep(0.3)  # 每篇間隔，避免觸發 Dcard API 速率限制
 
             conn.commit()
 
