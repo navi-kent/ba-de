@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:17
+    container_name: ba-de-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${PG_DATABASE:-bade}
+      POSTGRES_USER: ${PG_USER:-bade_user}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?set PG_PASSWORD in .env}
+      TZ: ${TZ:-Asia/Taipei}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER:-bade_user} -d ${PG_DATABASE:-bade}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    container_name: ba-de-web
+    restart: unless-stopped
+    environment:
+      PG_HOST: db
+      PG_PORT: 5432
+      PG_USER: ${PG_USER:-bade_user}
+      PG_PASSWORD: ${PG_PASSWORD:?set PG_PASSWORD in .env}
+      PG_DATABASE: ${PG_DATABASE:-bade}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?set ADMIN_TOKEN in .env}
+      WISH_RECIPIENT_EMAIL: ${WISH_RECIPIENT_EMAIL:-}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      PORT: 5001
+      TZ: ${TZ:-Asia/Taipei}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+    ports:
+      - "5001:5001"
+    volumes:
+      - uploads_data:/app/frontend/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  scheduler:
+    build: .
+    container_name: ba-de-scheduler
+    restart: unless-stopped
+    environment:
+      PG_HOST: db
+      PG_PORT: 5432
+      PG_USER: ${PG_USER:-bade_user}
+      PG_PASSWORD: ${PG_PASSWORD:?set PG_PASSWORD in .env}
+      PG_DATABASE: ${PG_DATABASE:-bade}
+      TZ: ${TZ:-Asia/Taipei}
+      SCRAPER_INTERVAL_SECONDS: ${SCRAPER_INTERVAL_SECONDS:-21600}
+      RUN_SCRAPERS_ON_START: ${RUN_SCRAPERS_ON_START:-1}
+    command: ["/app/docker/scheduler-loop.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  uploads_data:

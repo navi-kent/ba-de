@@ -1,8 +1,9 @@
-name: Deploy to Hetzner
+name: Deploy
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -14,21 +15,24 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
+          script_stop: true
           script: |
             set -e
-            cd /home/deploy/Ba-de
+            cd /home/laradock/ba-de
 
-            # 拉取最新程式
-            git pull origin main
+            # 拉取最新程式（避免自動 merge 造成部署機狀態漂移）
+            git fetch origin main
+            git checkout main
+            git pull --ff-only origin main
 
-            # 安裝/更新套件
-            source venv/bin/activate
-            pip install -r requirements.txt -q
+            # 重新建置並啟動容器
+            docker compose up -d --build --remove-orphans
 
-            # 套用資料庫 schema 變更（CREATE IF NOT EXISTS，安全可重複執行）
-            python db/init_db.py
+            # 確認 web 容器就緒
+            docker compose ps
+            docker compose exec -T web python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:5001/healthz', timeout=10).read().decode())"
 
-            # 重啟 gunicorn
-            sudo systemctl restart ba-de.service
+            # 清掉未使用的舊 image
+            docker image prune -f
 
             echo "✅ 部署完成"

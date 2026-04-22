@@ -55,6 +55,45 @@
 - Python 3.11+
 - PostgreSQL 17（`brew install postgresql@17`）
 
+### Docker / Ubuntu 部署
+
+若要部署到 Ubuntu，建議直接使用 Docker Compose，不需要另外安裝本機 PostgreSQL。
+
+```bash
+# 1. 準備環境變數
+cp .env.example .env
+# 編輯 .env，至少填入 PG_PASSWORD、ADMIN_TOKEN
+
+# 2. 建置並啟動
+docker compose up -d --build
+
+# 3. 查看狀態
+docker compose ps
+docker compose logs -f web
+```
+
+啟動後：
+- 前端 + API：`http://SERVER_IP:5001`
+- PostgreSQL：由 `db` 容器提供，資料存在 `postgres_data` volume
+- 後台上傳圖片：存在 `uploads_data` volume
+- 爬蟲排程：由 `scheduler` 容器每 6 小時執行一次（可用 `SCRAPER_INTERVAL_SECONDS` 調整）
+
+常用指令：
+
+```bash
+# 停止服務
+docker compose down
+
+# 更新程式後重新部署
+docker compose up -d --build
+
+# 手動補跑 schema 初始化
+docker compose exec web python db/init_db.py
+
+# 手動補跑爬蟲
+docker compose exec scheduler /app/docker/run_scrapers.sh
+```
+
 ### 首次安裝
 
 ```bash
