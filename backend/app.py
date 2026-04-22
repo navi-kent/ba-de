@@ -162,6 +162,22 @@ def robots_txt():
     return send_from_directory(FRONTEND_DIR, "robots.txt", mimetype="text/plain")
 
 
+@app.route("/healthz")
+def healthz():
+    """容器健康檢查：確認應用程式與資料庫連線正常。"""
+    try:
+        conn = get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                cur.fetchone()
+        finally:
+            conn.close()
+        return jsonify({"ok": True}), 200
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 503
+
+
 # ── 前端靜態頁面 ──────────────────────────────────────────────
 
 @app.route("/")
