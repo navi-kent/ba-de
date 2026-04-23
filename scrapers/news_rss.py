@@ -8,7 +8,7 @@ Google News 提供 RSS feed，以關鍵字組合搜尋，不需登入、不需 A
 import json
 import yaml
 import feedparser
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.parse import quote
 from dateutil import parser as date_parser
@@ -37,12 +37,14 @@ def generate_keywords():
     return keywords
 
 
-def build_rss_url(keyword: str) -> str:
-    """將關鍵字編碼成 Google News RSS URL（繁體中文 / 台灣版）。"""
-    return (
-        f"https://news.google.com/rss/search?"
-        f"q={quote(keyword)}&hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
-    )
+def build_rss_url(keyword: str, lookback_days: int = 30) -> str:
+    """將關鍵字編碼成 Google News RSS URL（繁體中文 / 台灣版）。
+
+    加上 after: 日期過濾，避免熱門舊文章佔滿 100 篇上限而擠掉最新新聞。
+    """
+    cutoff = (datetime.now() - timedelta(days=lookback_days)).strftime("%Y-%m-%d")
+    q = quote(f"{keyword} after:{cutoff}")
+    return f"https://news.google.com/rss/search?q={q}&hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
 
 
 # 判斷文章是否與八德區相關的詞彙集合
@@ -81,6 +83,13 @@ def insert_post(conn, entry, keyword) -> bool:
     if not is_relevant(title, summary):
         return False
 
+    # 媒體名稱（存 author 欄位）
+    media = entry.get("source", {}).get("title") if isinstance(entry.get("source"), dict) else None
+
+    # Google News RSS 標題格式為「文章標題 - 媒體名稱」，拆掉後綴還原乾淨標題
+    if media and title.endswith(f" - {media}"):
+        title = title[: -len(f" - {media}")].rstrip(" -").strip()
+
     try:
         published_dt = date_parser.parse(entry.get("published", "")) if entry.get("published") else None
 
@@ -103,8 +112,7 @@ def insert_post(conn, entry, keyword) -> bool:
                 "news",
                 keyword,       # source_account 記錄搜尋關鍵字，用於首頁「熱門議題」統計
                 post_id,
-                # source 欄位為新聞媒體名稱（dict 格式），非 dict 時略過
-                entry.get("source", {}).get("title") if isinstance(entry.get("source"), dict) else None,
+                media,
                 title,
                 summary,
                 entry.get("link"),

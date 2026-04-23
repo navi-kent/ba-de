@@ -49,6 +49,10 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
 .pg-btn:disabled{opacity:.3;cursor:not-allowed}
 .skeleton{background:linear-gradient(90deg,rgba(30,41,59,.6) 25%,rgba(51,65,85,.6) 50%,rgba(30,41,59,.6) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.media-badge{display:inline-flex;align-items:center;font-size:.7rem;font-weight:600;padding:.15rem .45rem;border-radius:3px;background:rgba(34,211,238,.08);color:var(--cy);border:1px solid rgba(34,211,238,.18);white-space:nowrap;flex-shrink:0}
+.media-tab{padding:.28rem .8rem;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--t3);background:transparent;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .15s;font-family:var(--f);white-space:nowrap}
+.media-tab:hover{color:var(--t1);border-color:rgba(34,211,238,.3);background:rgba(34,211,238,.06)}
+.media-tab.on{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.4);color:var(--cy)}
 </style>
 </head>
 <body>
@@ -93,6 +97,20 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
         </select>
       </div>
     </div>
+    <!-- 平台篩選 -->
+    <div id="media-filter" style="display:none;margin-top:.75rem">
+      <div id="media-header" onclick="toggleMediaPanel()" style="display:flex;align-items:center;gap:8px;padding:.5rem .85rem;border-radius:8px;border:1px solid rgba(34,211,238,.2);background:rgba(34,211,238,.04);cursor:pointer;transition:all .15s;user-select:none" onmouseenter="this.style.background='rgba(34,211,238,.08)'" onmouseleave="this.style.background='rgba(34,211,238,.04)'">
+        <i class="fa-solid fa-layer-group" style="font-size:.72rem;color:var(--cy);flex-shrink:0"></i>
+        <span style="font-size:.78rem;color:var(--cy);font-weight:600;letter-spacing:.3px;flex-shrink:0">平台篩選</span>
+        <span id="media-active-name" style="display:none;font-size:.78rem;color:var(--t2);font-weight:500;padding-left:4px;border-left:1px solid rgba(255,255,255,.15);margin-left:2px"></span>
+        <i id="media-toggle-icon" class="fa-solid fa-chevron-down" style="font-size:.65rem;color:var(--t4);margin-left:auto;transition:transform .2s"></i>
+      </div>
+      <div id="media-panel" style="display:none;margin-top:.6rem;padding:.7rem .85rem;border-radius:8px;border:1px solid rgba(255,255,255,.07);background:rgba(15,23,42,.4)">
+        <div id="media-tabs" class="d-flex flex-wrap gap-2">
+          <button class="media-tab on" data-media="all">全部</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Stats Bar -->
@@ -116,7 +134,7 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
 </div>
 
 <script>
-let currentPage=1,currentSource='all',currentMonth='all',currentSearch='',totalPages=1;
+let currentPage=1,currentSource='all',currentMonth='all',currentSearch='',currentMedia='all',totalPages=1;
 let searchTimer;
 
 function formatDT(s){if(!s)return '';try{return new Date(s).toLocaleString('zh-TW',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});}catch(e){return s.substring(0,10);}}
@@ -131,12 +149,11 @@ function initMonthFilter(){
   }
 }
 
-function srcBadge(p){return '';}
-
 function postHtml(p){
   const meta=[];
   if(p.published_at)meta.push(`<span><i class="fa-regular fa-calendar me-1"></i>${formatDT(p.published_at)}</span>`);
-  return `<a class="ni" href="${p.url}" target="_blank" rel="noopener">${srcBadge(p)}<div style="flex:1;min-width:0"><div class="ni-title">${p.title}</div><div class="ni-meta">${meta.join('')}</div></div><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.7rem;color:var(--t4);flex-shrink:0;margin-top:4px"></i></a>`;
+  const mediaBadge=p.media?`<span class="media-badge">${p.media}</span>`:'';
+  return `<a class="ni" href="${p.url}" target="_blank" rel="noopener"><div style="flex:1;min-width:0"><div class="ni-title">${p.title}</div><div class="ni-meta">${meta.join('')}${mediaBadge}</div></div><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.7rem;color:var(--t4);flex-shrink:0;margin-top:4px"></i></a>`;
 }
 
 function buildPageRange(cur,total){
@@ -174,7 +191,7 @@ async function loadPosts(){
   list.innerHTML=Array(5).fill(0).map(()=>`<div class="skeleton" style="height:64px;border-radius:0;margin-bottom:1px"></div>`).join('');
 
   try{
-    const params=new URLSearchParams({source:currentSource,month:currentMonth,q:currentSearch,page:currentPage,limit:20});
+    const params=new URLSearchParams({source:currentSource,month:currentMonth,q:currentSearch,page:currentPage,limit:20,media:currentMedia});
     const d=await fetch(`/api/posts?${params}`).then(r=>r.json());
     totalPages=d.total_pages||1;
 
@@ -199,6 +216,41 @@ function readUrlQ(){
   if(q){document.getElementById('q').value=q;document.getElementById('btn-clear').style.display='';currentSearch=q;}
 }
 
+function toggleMediaPanel(forceClose){
+  const panel=document.getElementById('media-panel');
+  const icon=document.getElementById('media-toggle-icon');
+  const open=panel.style.display==='none';
+  if(forceClose===true&&panel.style.display==='none')return;
+  panel.style.display=(forceClose||!open)?'none':'';
+  icon.style.transform=(!forceClose&&open)?'rotate(180deg)':'';
+}
+
+async function loadMediaTabs(){
+  try{
+    const d=await fetch('/api/media-list').then(r=>r.json());
+    if(!d.media||!d.media.length)return;
+    const wrap=document.getElementById('media-tabs');
+    d.media.forEach(m=>{
+      const btn=document.createElement('button');
+      btn.className='media-tab';
+      btn.dataset.media=m.name;
+      btn.textContent=m.name;
+      btn.addEventListener('click',function(){
+        document.querySelectorAll('#media-tabs .media-tab').forEach(b=>b.classList.remove('on'));
+        this.classList.add('on');
+        currentMedia=this.dataset.media;currentPage=1;
+        const nameEl=document.getElementById('media-active-name');
+        nameEl.textContent=currentMedia==='all'?'':currentMedia;
+        nameEl.style.display=currentMedia==='all'?'none':'';
+        toggleMediaPanel(true);
+        loadPosts();
+      });
+      wrap.appendChild(btn);
+    });
+    document.getElementById('media-filter').style.display='';
+  }catch(e){}
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   initMonthFilter();
   readUrlQ();
@@ -209,6 +261,15 @@ document.addEventListener('DOMContentLoaded',()=>{
       this.classList.add('on');
       currentSource=this.dataset.src;currentPage=1;loadPosts();
     });
+  });
+
+  document.getElementById('media-tabs').querySelector('[data-media="all"]').addEventListener('click',function(){
+    document.querySelectorAll('#media-tabs .media-tab').forEach(b=>b.classList.remove('on'));
+    this.classList.add('on');
+    currentMedia='all';currentPage=1;
+    document.getElementById('media-active-name').style.display='none';
+    toggleMediaPanel(true);
+    loadPosts();
   });
 
   document.getElementById('month-sel').addEventListener('change',e=>{
@@ -222,6 +283,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     searchTimer=setTimeout(()=>{if(currentSearch!==v){currentSearch=v;currentPage=1;loadPosts();}},400);
   });
 
+  loadMediaTabs();
   loadPosts();
 });
 </script>

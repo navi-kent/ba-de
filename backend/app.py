@@ -10,28 +10,23 @@ import os
 import re
 import time
 import uuid
+import hmac
 import psycopg2
 import psycopg2.extras
-import smtplib
 from datetime import datetime
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from functools import wraps
 from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-# Email 設定（許願池通知用），未設定時 email 功能自動停用
-WISH_RECIPIENT = os.environ.get("WISH_RECIPIENT_EMAIL", "")
-SMTP_HOST      = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT      = int(os.environ.get("SMTP_PORT", "587"))
-SMTP_USER      = os.environ.get("SMTP_USER", "")
-SMTP_PASSWORD  = os.environ.get("SMTP_PASSWORD", "")
-ADMIN_TOKEN    = os.environ.get("ADMIN_TOKEN", "changeme")
+ADMIN_USER  = os.environ.get("ADMIN_USER", "")
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "changeme")
 
 FRONTEND_DIR = BASE_DIR / "frontend"
 UPLOAD_DIR   = FRONTEND_DIR / "uploads"
@@ -41,6 +36,7 @@ ALLOWED_EXTS = {"png", "jpg", "jpeg", "gif", "webp"}
 
 # static_folder 指向 frontend/，讓 Flask 直接 serve HTML / CSS / JS / 圖片
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
+limiter = Limiter(get_remote_address, app=app, default_limits=[])
 
 
 @app.after_request
@@ -79,11 +75,14 @@ def get_conn():
 
 
 def require_admin(f):
-    """裝飾器：驗證 request header 中的 X-Admin-Token，不符合回傳 401。"""
+    """裝飾器：驗證 X-Admin-User 和 X-Admin-Token，兩者皆符合才放行。"""
     @wraps(f)
     def decorated(*args, **kwargs):
+        user  = request.headers.get("X-Admin-User", "")
         token = request.headers.get("X-Admin-Token", "")
-        if not token or token != ADMIN_TOKEN:
+        user_ok  = ADMIN_USER  and hmac.compare_digest(user,  ADMIN_USER)
+        token_ok = hmac.compare_digest(token, ADMIN_TOKEN) if token else False
+        if not (user_ok and token_ok):
             return jsonify({"ok": False, "error": "Unauthorized"}), 401
         return f(*args, **kwargs)
     return decorated
@@ -107,38 +106,6 @@ def auto_slug(title: str) -> str:
     slug = re.sub(r"-+", "-", slug).strip("-")
     return slug[:60] + f"-{int(time.time())}"
 
-
-def send_wish_email(name, email, line_id, phone, category, content):
-    """發送許願池通知 email 給管理員。
-
-    若 WISH_RECIPIENT / SMTP_USER / SMTP_PASSWORD 任一未設定則直接回傳 False，
-    不拋例外（email 通知是 optional 功能，不應影響許願寫入 DB）。
-
-    Returns:
-        True 代表發送成功，False 代表未設定或發送失敗
-    """
-    if not (WISH_RECIPIENT and SMTP_USER and SMTP_PASSWORD):
-        return False
-    msg = MIMEMultipart()
-    msg["From"]    = SMTP_USER
-    msg["To"]      = WISH_RECIPIENT
-    msg["Subject"] = f"【八德夢想家】新留言：{category}"
-    body = (
-        f"來自用戶的留言\n\n"
-        f"暱稱：{name or '（未填寫）'}\n"
-        f"Email：{email or '（未填寫）'}\n"
-        f"LINE ID：{line_id or '（未填寫）'}\n"
-        f"聯絡電話：{phone or '（未填寫）'}\n"
-        f"類別：{category}\n\n"
-        f"內容：\n{content}\n\n"
-        f"---\n此信件由八德夢想家自動發送"
-    )
-    msg.attach(MIMEText(body, "plain", "utf-8"))
-    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASSWORD)
-        server.send_message(msg)
-    return True
 
 
 def _parse_dt(s):
@@ -376,6 +343,7 @@ def api_visit():
 # ── 公開 API：許願池 ─────────────────────────────────────────
 
 @app.route("/api/wish", methods=["POST"])
+@limiter.limit("5 per minute; 20 per hour")
 def api_wish():
     """接收許願表單，寫入 DB 並嘗試發送 email 通知。
 
@@ -420,14 +388,7 @@ def api_wish():
     finally:
         conn.close()
 
-    # email 發送獨立於 DB 寫入，失敗只記 log，不回傳 500
-    email_sent = False
-    try:
-        email_sent = send_wish_email(name, email, line_id, phone, category, content)
-    except Exception as e:
-        print(f"[wish] email 發送失敗: {e}")
-
-    return jsonify({"ok": True, "email_sent": email_sent})
+    return jsonify({"ok": True})
 
 
 # ── 公開 API：統計 + 新聞消息 ────────────────────────────────
@@ -468,6 +429,9 @@ def api_stats():
             cur.execute("SELECT TO_CHAR(MAX(scraped_at), 'YYYY-MM-DD HH24:MI') as lu FROM raw_posts")
             last_updated = cur.fetchone()["lu"]
 
+            cur.execute("SELECT COUNT(*) as cnt FROM wishes")
+            wish_total = cur.fetchone()["cnt"]
+
         def clean_label(s):
             """移除搜尋關鍵字中的所有引號，回傳易讀標籤。"""
             return s.replace('"', '').strip() if s else s
@@ -478,6 +442,7 @@ def api_stats():
             "sources":      [{"source": r["source"], "label": SOURCE_LABELS.get(r["source"], r["source"]), "cnt": r["cnt"]} for r in sources],
             "topics":       [{"keyword": r["source_account"], "label": clean_label(r["source_account"]), "cnt": r["cnt"]} for r in topics],
             "last_updated": last_updated,
+            "wish_total":   wish_total,
         })
     finally:
         conn.close()
@@ -502,6 +467,7 @@ def api_posts():
     q      = request.args.get("q", "").strip()
     topic  = request.args.get("topic", "all")
     month  = request.args.get("month", "all")
+    media  = request.args.get("media", "all")
     limit  = min(int(request.args.get("limit", 20)), 200)
     page   = max(1, int(request.args.get("page", 1)))
     offset = (page - 1) * limit
@@ -523,6 +489,9 @@ def api_posts():
         if topic != "all":
             where_clauses.append("source_account = %s")
             params.append(topic)
+        if media != "all":
+            where_clauses.append("author = %s")
+            params.append(media)
 
         where_sql = ("WHERE " + " AND ".join(where_clauses)) if where_clauses else ""
 
@@ -531,7 +500,7 @@ def api_posts():
             count = cur.fetchone()["cnt"]
 
             cur.execute(
-                f"""SELECT id, source, source_account, title, content, url, published_at, scraped_at
+                f"""SELECT id, source, source_account, author, title, content, url, published_at, scraped_at
                     FROM raw_posts {where_sql}
                     ORDER BY published_at DESC, scraped_at DESC
                     LIMIT %s OFFSET %s""",
@@ -546,10 +515,10 @@ def api_posts():
                     "id":             r["id"],
                     "source":         r["source"],
                     "source_label":   SOURCE_LABELS.get(r["source"], r["source"]),
-                    # 移除 source_account 中的引號（Google News 關鍵字格式為 "桃園市" "八德區"）
                     "source_account": (r["source_account"] or "").replace('"', '').strip() or None,
+                    "media":          r["author"] or None,
                     "title":          r["title"] or "（無標題）",
-                    "content":        (r["content"] or "")[:150],  # 列表頁截短，節省傳輸量
+                    "content":        (r["content"] or "")[:150],
                     "url":            r["url"],
                     "published_at":   r["published_at"].isoformat() if r["published_at"] else None,
                     "scraped_at":     r["scraped_at"].isoformat() if r["scraped_at"] else None,
@@ -562,6 +531,26 @@ def api_posts():
             "total_pages": total_pages,
             "has_next":    offset + limit < count,
         })
+    finally:
+        conn.close()
+
+
+@app.route("/api/media-list")
+def api_media_list():
+    """新聞媒體平台清單，依文章數量排序。"""
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT author AS name, COUNT(*) AS cnt
+                FROM raw_posts
+                WHERE source = 'news' AND author IS NOT NULL AND author != ''
+                GROUP BY author
+                ORDER BY cnt DESC
+                LIMIT 30
+            """)
+            rows = cur.fetchall()
+        return jsonify({"media": [{"name": r["name"], "count": r["cnt"]} for r in rows]})
     finally:
         conn.close()
 
@@ -670,7 +659,8 @@ def admin_create_announcement():
         conn.rollback()
         if "unique" in str(e).lower():
             return jsonify({"ok": False, "error": "此網址已存在，請換一個"}), 409
-        return jsonify({"ok": False, "error": str(e)}), 500
+        print(f"[admin] create announcement error: {e}")
+        return jsonify({"ok": False, "error": "伺服器錯誤，請稍後再試"}), 500
     finally:
         conn.close()
 
@@ -711,7 +701,8 @@ def admin_update_announcement(aid):
         conn.rollback()
         if "unique" in str(e).lower():
             return jsonify({"ok": False, "error": "此網址已存在，請換一個"}), 409
-        return jsonify({"ok": False, "error": str(e)}), 500
+        print(f"[admin] update announcement error: {e}")
+        return jsonify({"ok": False, "error": "伺服器錯誤，請稍後再試"}), 500
     finally:
         conn.close()
 
@@ -724,6 +715,66 @@ def admin_delete_announcement(aid):
     try:
         with conn.cursor() as cur:
             cur.execute("DELETE FROM announcements WHERE id = %s", (aid,))
+        conn.commit()
+        return jsonify({"ok": True})
+    finally:
+        conn.close()
+
+
+# ── 後台 API：許願池管理 ─────────────────────────────────────
+
+@app.route("/api/admin/wishes", methods=["GET"])
+@require_admin
+def admin_list_wishes():
+    """後台：取得許願池留言列表，每頁 20 筆，最新在前。"""
+    page   = max(1, int(request.args.get("page", 1)))
+    limit  = 20
+    offset = (page - 1) * limit
+
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) as cnt FROM wishes")
+            total = cur.fetchone()["cnt"]
+
+            cur.execute(
+                """SELECT id, name, email, line_id, phone, category, content, ip, created_at
+                   FROM wishes ORDER BY created_at DESC LIMIT %s OFFSET %s""",
+                (limit, offset),
+            )
+            rows = cur.fetchall()
+
+        return jsonify({
+            "items": [
+                {
+                    "id":         r["id"],
+                    "name":       r["name"],
+                    "email":      r["email"],
+                    "line_id":    r["line_id"],
+                    "phone":      r["phone"],
+                    "category":   r["category"],
+                    "content":    r["content"],
+                    "ip":         r["ip"],
+                    "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+                }
+                for r in rows
+            ],
+            "total":       total,
+            "page":        page,
+            "total_pages": max(1, (total + limit - 1) // limit),
+        })
+    finally:
+        conn.close()
+
+
+@app.route("/api/admin/wishes/<int:wid>", methods=["DELETE"])
+@require_admin
+def admin_delete_wish(wid):
+    """後台：刪除單筆許願池留言。"""
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM wishes WHERE id = %s", (wid,))
         conn.commit()
         return jsonify({"ok": True})
     finally:
