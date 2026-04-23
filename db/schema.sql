@@ -78,6 +78,46 @@ CREATE TABLE IF NOT EXISTS visitors (
 );
 
 
+-- 政府官網最新消息（八德區公所 & 戶政事務所 HTML 爬蟲）
+CREATE TABLE IF NOT EXISTS gov_news (
+    id              SERIAL PRIMARY KEY,
+
+    -- 來源識別
+    source_site     VARCHAR(30)  NOT NULL,   -- 'bade_district' | 'bade_hro'
+    source_name     TEXT         NOT NULL,   -- '八德區公所' | '八德區戶政事務所'
+
+    -- 文章識別
+    news_id         TEXT         NOT NULL,   -- URL s= 參數值（同站內唯一）
+    url             TEXT         NOT NULL,
+
+    -- 核心內容
+    title           TEXT         NOT NULL,
+    content         TEXT,                    -- 全文（可日後補爬）
+
+    -- 發布資訊
+    department      VARCHAR(100),            -- 發布單位（bade_district 有；bade_hro 無）
+    published_date  DATE,                    -- 西元日期（從民國年轉換）
+    published_raw   VARCHAR(20),             -- 原始民國年字串，e.g. "115-04-09"
+
+    -- 分類（從 department / title 自動推導，可日後 AI 補充）
+    category        VARCHAR(50),             -- 主分類，e.g. '民政', '社會福利', '戶籍管理'
+    sub_category    VARCHAR(50),             -- 次分類，e.g. department 名稱或細分主題
+    tags            TEXT[],                  -- 關鍵詞標籤陣列
+
+    -- 管理
+    scraped_at      TIMESTAMPTZ  DEFAULT NOW(),
+    raw_json        JSONB,
+
+    UNIQUE (source_site, news_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_gov_news_source_date ON gov_news(source_site, published_date DESC);
+CREATE INDEX IF NOT EXISTS idx_gov_news_category    ON gov_news(category, published_date DESC);
+CREATE INDEX IF NOT EXISTS idx_gov_news_department  ON gov_news(department) WHERE department IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_gov_news_scraped     ON gov_news(scraped_at DESC);
+CREATE INDEX IF NOT EXISTS idx_gov_news_tags        ON gov_news USING GIN(tags);
+
+
 -- 許願池留言
 CREATE TABLE IF NOT EXISTS wishes (
     id         SERIAL PRIMARY KEY,

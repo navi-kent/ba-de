@@ -89,6 +89,8 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
     <div class="d-flex align-items-center gap-3 flex-wrap">
       <div id="src-tabs" class="d-flex flex-wrap gap-2">
         <button class="cat-tab on" data-src="all">全部消息</button>
+        <button class="cat-tab" data-src="bade_district">公所公告</button>
+        <button class="cat-tab" data-src="bade_hro">戶政公告</button>
       </div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
         <label style="font-size:.82rem;color:var(--t3)">月份：</label>
@@ -186,13 +188,22 @@ function clearSearch(){
   currentSearch='';currentPage=1;loadPosts();
 }
 
+const GOV_SOURCES=new Set(['bade_district','bade_hro']);
+
 async function loadPosts(){
   const list=document.getElementById('news-list');
   list.innerHTML=Array(5).fill(0).map(()=>`<div class="skeleton" style="height:64px;border-radius:0;margin-bottom:1px"></div>`).join('');
 
   try{
-    const params=new URLSearchParams({source:currentSource,month:currentMonth,q:currentSearch,page:currentPage,limit:20,media:currentMedia});
-    const d=await fetch(`/api/posts?${params}`).then(r=>r.json());
+    let endpoint,params;
+    if(GOV_SOURCES.has(currentSource)){
+      params=new URLSearchParams({source:currentSource,month:currentMonth,q:currentSearch,page:currentPage,limit:20});
+      endpoint=`/api/gov-news?${params}`;
+    }else{
+      params=new URLSearchParams({source:currentSource,month:currentMonth,q:currentSearch,page:currentPage,limit:20,media:currentMedia});
+      endpoint=`/api/posts?${params}`;
+    }
+    const d=await fetch(endpoint).then(r=>r.json());
     totalPages=d.total_pages||1;
 
     const statsBar=document.getElementById('stats-bar');

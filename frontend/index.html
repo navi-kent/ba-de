@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant" data-bs-theme="dark">
+<html lang="zh-Hant" data-bs-theme="dark" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow, noarchive">
@@ -12,30 +12,39 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <style>
 :root{--bg:#0b0f19;--cb:rgba(22,27,34,.65);--bd:rgba(255,255,255,.08);--p:#3b82f6;--pd:#2563eb;--pl:#60a5fa;--pg:rgba(59,130,246,.4);--cy:#22d3ee;--gn:#34d399;--yw:#fbbf24;--t1:#f8fafc;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--r:8px;--rm:12px;--rl:16px;--f:"Inter","Noto Sans TC",-apple-system,sans-serif}
+[data-theme="light"]{--bg:#f1f5f9;--cb:rgba(255,255,255,.88);--bd:rgba(0,0,0,.09);--t1:#0f172a;--t2:#475569;--t3:#64748b;--t4:#94a3b8}
 *,*::before,*::after{box-sizing:border-box}
-body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20% -10%,rgba(59,130,246,.13),transparent 60%),radial-gradient(ellipse 60% 40% at 80% 5%,rgba(52,211,153,.06),transparent 50%);background-attachment:fixed;color:#e2e8f0;font-family:var(--f);font-size:16px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20% -10%,rgba(59,130,246,.13),transparent 60%),radial-gradient(ellipse 60% 40% at 80% 5%,rgba(52,211,153,.06),transparent 50%);background-attachment:fixed;color:var(--t1);font-family:var(--f);font-size:16px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;transition:background-color .25s,color .25s}
+[data-theme="light"] body{background-image:radial-gradient(ellipse 80% 50% at 20% -10%,rgba(59,130,246,.07),transparent 60%),radial-gradient(ellipse 60% 40% at 80% 5%,rgba(52,211,153,.03),transparent 50%)}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
-.navbar{background:rgba(11,15,25,.82)!important;backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:.75rem 0}
+[data-theme="light"] ::-webkit-scrollbar-thumb{background:#94a3b8}
+.navbar{background:rgba(11,15,25,.82)!important;backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:.75rem 0;transition:background .25s}
+[data-theme="light"] .navbar{background:rgba(241,245,249,.92)!important}
 .navbar-brand{font-weight:800;font-size:1.15rem;background:linear-gradient(135deg,#60a5fa,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.2px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
 .nlp{color:var(--t2);text-decoration:none;font-size:.88rem;font-weight:500;padding:.38rem .85rem;border-radius:999px;border:1px solid transparent;transition:all .15s;display:inline-flex;align-items:center;gap:.3rem}
 .nlp:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+[data-theme="light"] .nlp:hover{background:rgba(0,0,0,.05)}
 .nlp.on{color:var(--pl);background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3)}
 @keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ticker-bar{background:linear-gradient(90deg,rgba(15,23,42,.98),rgba(11,15,25,.98));border-bottom:1px solid rgba(59,130,246,.2);height:42px;overflow:hidden;display:flex;align-items:center}
+.ticker-bar{background:linear-gradient(90deg,rgba(15,23,42,.98),rgba(11,15,25,.98));border-bottom:1px solid rgba(59,130,246,.2);height:42px;overflow:hidden;display:flex;align-items:center;transition:background .25s}
+[data-theme="light"] .ticker-bar{background:linear-gradient(90deg,rgba(226,232,240,.98),rgba(241,245,249,.98));border-bottom-color:rgba(59,130,246,.12)}
 .ticker-lbl{flex-shrink:0;background:var(--p);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.25rem .8rem;border-radius:0 6px 6px 0;white-space:nowrap}
 .ticker-wrap{flex:1;overflow:hidden}
 .ticker-track{display:flex;align-items:center;height:42px;white-space:nowrap;animation:tk 40s linear infinite}
 .ticker-track:hover{animation-play-state:paused}
 .ti{display:inline-flex;align-items:center;font-size:.84rem;color:#cbd5e1;padding:0 1.5rem;gap:.5rem;text-decoration:none;transition:color .15s}
+[data-theme="light"] .ti{color:#475569}
 .ti:hover{color:var(--pl)}
 .hero{padding:4rem 0 2.5rem;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-60%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(59,130,246,.18) 0%,rgba(52,211,153,.07) 40%,transparent 70%);pointer-events:none;animation:hg 8s ease-in-out infinite alternate}
 @keyframes hg{0%{opacity:.6;transform:translateX(-50%) scale(1)}100%{opacity:1;transform:translateX(-50%) scale(1.08)}}
 .hero-title{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-1px;line-height:1.15;background:linear-gradient(135deg,#60a5fa,#22d3ee 40%,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
 .hero-sub{color:var(--t2);font-size:1.05rem;margin-top:.7rem;position:relative;z-index:1}
-.vc-pill{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.2rem;background:rgba(15,23,42,.7);border:1px solid rgba(59,130,246,.25);border-radius:30px;padding:.45rem 1.2rem;font-size:.88rem;color:var(--t3)}
+.vc-pill{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.2rem;background:rgba(15,23,42,.7);border:1px solid rgba(59,130,246,.25);border-radius:30px;padding:.45rem 1.2rem;font-size:.88rem;color:var(--t3);transition:background .25s}
+[data-theme="light"] .vc-pill{background:rgba(255,255,255,.8);border-color:rgba(59,130,246,.2)}
 .gc{background:var(--cb);backdrop-filter:blur(12px);border:1px solid var(--bd);border-radius:var(--rl);transition:all .25s}
 .gc:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.35),0 0 20px rgba(59,130,246,.18);border-color:rgba(255,255,255,.16)}
+[data-theme="light"] .gc:hover{box-shadow:0 8px 30px rgba(0,0,0,.1),0 0 16px rgba(59,130,246,.1);border-color:rgba(0,0,0,.14)}
 .sc{padding:1.8rem;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden}
 .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#3b82f6,#22d3ee,#34d399);opacity:0;transition:opacity .25s}
 .gc:hover .sc::before{opacity:1}
@@ -44,7 +53,9 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
 .sc-num{font-size:2.4rem;font-weight:800;color:var(--t1);letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1.2}
 .nc{background:var(--cb);border:1px solid var(--bd);border-radius:var(--rm);overflow:hidden;display:flex;flex-direction:column;height:100%;transition:all .25s}
 .nc:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.4),0 0 20px rgba(59,130,246,.2);border-color:rgba(59,130,246,.4)}
+[data-theme="light"] .nc:hover{box-shadow:0 10px 30px rgba(0,0,0,.1),0 0 16px rgba(59,130,246,.1)}
 .nc-img{width:100%;height:180px;background:linear-gradient(135deg,rgba(30,41,59,.9),rgba(15,23,42,.9));display:flex;align-items:center;justify-content:center;overflow:hidden}
+[data-theme="light"] .nc-img{background:linear-gradient(135deg,rgba(226,232,240,.9),rgba(241,245,249,.9))}
 .nc-img img{width:100%;height:100%;object-fit:cover}
 .nc-body{padding:1.15rem;display:flex;flex-direction:column;flex:1}
 .cat-badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.22rem .65rem;border-radius:6px;background:rgba(59,130,246,.15);color:var(--pl);border:1px solid rgba(59,130,246,.3);text-transform:uppercase;letter-spacing:.5px}
@@ -59,11 +70,22 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
 .btn-p:hover{background:var(--pd);color:#fff;transform:translateY(-2px);box-shadow:0 4px 15px var(--pg)}
 .btn-o{background:transparent;color:var(--t2);border:1px solid rgba(255,255,255,.15);padding:.55rem 1.3rem;border-radius:var(--r);font-weight:500;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:all .15s;text-decoration:none;font-family:var(--f)}
 .btn-o:hover{color:var(--t1);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.04)}
+[data-theme="light"] .btn-o{border-color:rgba(0,0,0,.15)}
+[data-theme="light"] .btn-o:hover{border-color:rgba(0,0,0,.3);background:rgba(0,0,0,.04)}
 .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
 .sh-t{font-size:1.1rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:10px}
 .cta-card{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .skeleton{background:linear-gradient(90deg,rgba(30,41,59,.6) 25%,rgba(51,65,85,.6) 50%,rgba(30,41,59,.6) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+[data-theme="light"] .skeleton{background:linear-gradient(90deg,rgba(203,213,225,.7) 25%,rgba(226,232,240,.9) 50%,rgba(203,213,225,.7) 75%);background-size:200% 100%}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+[data-theme="light"] #search-ov{background:rgba(226,232,240,.95)!important}
+[data-theme="light"] #search-ov>div>div{background:rgba(255,255,255,.98)!important;border-color:rgba(59,130,246,.35)!important}
+[data-theme="light"] #search-ov input{color:#0f172a!important}
+[data-theme="light"] .modal-content{background:rgba(255,255,255,.98)!important;border-color:rgba(0,0,0,.1)!important}
+[data-theme="light"] #ext-news{color:var(--t1)}
+[data-theme="light"] #ext-news a{color:var(--t1)!important}
+#theme-btn{background:transparent;border:1px solid var(--bd);color:var(--t2);width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:.82rem}
+#theme-btn:hover{border-color:rgba(251,191,36,.5);color:#fbbf24}
 </style>
 </head>
 <body>
@@ -80,6 +102,9 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
   <div class="container">
     <a class="navbar-brand" href="/"><i class="fa-solid fa-tower-broadcast" style="-webkit-text-fill-color:#60a5fa"></i>八德資源網<span style="font-size:.58rem;font-weight:500;-webkit-text-fill-color:rgba(148,163,184,.4);color:rgba(148,163,184,.4);align-self:flex-start;padding-top:1px;margin-left:4px;letter-spacing:.3px">v1.0</span></a>
     <div class="d-flex align-items-center gap-1 flex-wrap">
+      <button id="theme-btn" onclick="toggleTheme()" title="切換主題">
+        <i id="theme-icon" class="fa-solid fa-sun"></i>
+      </button>
       <button onclick="toggleSearch()" style="background:transparent;border:1px solid var(--bd);color:var(--t2);width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-right:4px" onmouseover="this.style.borderColor='rgba(59,130,246,.4)';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--t2)'">
         <i class="fa-solid fa-magnifying-glass" style="font-size:.82rem"></i>
       </button>
@@ -133,6 +158,98 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
   </div>
   <div id="source-dist" style="display:none"></div>
 
+  <!-- 民生資訊 -->
+  <div class="sh">
+    <h2 class="sh-t fw-bold mb-0"><span style="width:4px;height:20px;background:#f87171;border-radius:2px;display:inline-block"></span>民生資訊</h2>
+    <span style="font-size:.78rem;color:var(--t3)">自動更新</span>
+  </div>
+  <div class="row g-4 mb-5">
+
+    <!-- 停水通知 -->
+    <div class="col-md-6 col-lg-3">
+      <div class="gc" style="height:100%;display:flex;flex-direction:column">
+        <div style="padding:1.2rem 1.2rem .8rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+          <span style="width:32px;height:32px;background:rgba(56,189,248,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-droplet" style="color:#38bdf8;font-size:.85rem"></i></span>
+          <div>
+            <div style="font-size:.88rem;font-weight:700;color:var(--t1)">停水通知</div>
+            <div style="font-size:.7rem;color:var(--t3)">台灣自來水公司</div>
+          </div>
+          <span id="water-badge" class="ms-auto" style="font-size:.65rem;font-weight:700;padding:.18rem .55rem;border-radius:99px;background:rgba(100,116,139,.15);color:var(--t3)">載入中</span>
+        </div>
+        <div id="water-body" style="padding:1rem;flex:1;overflow-y:auto;max-height:220px">
+          <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:12px;width:80%"></div>
+        </div>
+        <div style="padding:.6rem 1rem;border-top:1px solid var(--bd);font-size:.7rem;color:var(--t4)" id="water-ts"></div>
+      </div>
+    </div>
+
+    <!-- 計畫停電 -->
+    <div class="col-md-6 col-lg-3">
+      <div class="gc" style="height:100%;display:flex;flex-direction:column">
+        <div style="padding:1.2rem 1.2rem .8rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+          <span style="width:32px;height:32px;background:rgba(251,191,36,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-plug-circle-xmark" style="color:#fbbf24;font-size:.85rem"></i></span>
+          <div>
+            <div style="font-size:.88rem;font-weight:700;color:var(--t1)">計畫停電</div>
+            <div style="font-size:.7rem;color:var(--t3)">台灣電力公司</div>
+          </div>
+          <span id="power-badge" class="ms-auto" style="font-size:.65rem;font-weight:700;padding:.18rem .55rem;border-radius:99px;background:rgba(100,116,139,.15);color:var(--t3)">載入中</span>
+        </div>
+        <div id="power-body" style="padding:1rem;flex:1;overflow-y:auto;max-height:220px">
+          <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:12px;width:80%"></div>
+        </div>
+        <div style="padding:.6rem 1rem;border-top:1px solid var(--bd);font-size:.7rem;color:var(--t4)">
+          <span id="power-ts"></span>
+          <a href="https://service.taipower.com.tw/psvs1/outageweb/" target="_blank" rel="noopener" style="color:var(--p);font-size:.7rem;float:right;text-decoration:none">即時停電查詢 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 垃圾收受點 -->
+    <div class="col-md-6 col-lg-3">
+      <div class="gc" style="height:100%;display:flex;flex-direction:column">
+        <div style="padding:1.2rem 1.2rem .8rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+          <span style="width:32px;height:32px;background:rgba(52,211,153,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-trash-can" style="color:#34d399;font-size:.85rem"></i></span>
+          <div>
+            <div style="font-size:.88rem;font-weight:700;color:var(--t1)">垃圾收受點</div>
+            <div style="font-size:.7rem;color:var(--t3)">八德區</div>
+          </div>
+        </div>
+        <div id="garbage-body" style="padding:1rem;flex:1">
+          <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:12px;width:60%"></div>
+        </div>
+        <div style="padding:.6rem 1rem;border-top:1px solid var(--bd)">
+          <a href="https://route.tyoem.gov.tw/" target="_blank" rel="noopener" style="color:var(--p);font-size:.72rem;text-decoration:none">垃圾車即時路線查詢 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 即時停電 -->
+    <div class="col-md-6 col-lg-3">
+      <div class="gc" style="height:100%;display:flex;flex-direction:column">
+        <div style="padding:1.2rem 1.2rem .8rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+          <span style="width:32px;height:32px;background:rgba(248,113,113,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-bolt" style="color:#f87171;font-size:.85rem"></i></span>
+          <div>
+            <div style="font-size:.88rem;font-weight:700;color:var(--t1)">即時停電</div>
+            <div style="font-size:.7rem;color:var(--t3)">台灣電力公司</div>
+          </div>
+          <span id="realtime-badge" class="ms-auto" style="font-size:.65rem;font-weight:700;padding:.18rem .55rem;border-radius:99px;background:rgba(100,116,139,.15);color:var(--t3)">載入中</span>
+        </div>
+        <div id="realtime-body" style="padding:1rem;flex:1;overflow-y:auto;max-height:220px">
+          <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:12px;width:80%"></div>
+        </div>
+        <div style="padding:.6rem 1rem;border-top:1px solid var(--bd);font-size:.7rem;color:var(--t4)">
+          <span id="realtime-ts"></span>
+          <a href="https://service.taipower.com.tw/psvs1/outageweb/" target="_blank" rel="noopener" style="color:var(--p);font-size:.7rem;float:right;text-decoration:none">完整查詢 →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
   <!-- Latest News -->
   <div class="sh">
     <h2 class="sh-t fw-bold mb-0"><span style="width:4px;height:20px;background:var(--p);border-radius:2px;display:inline-block"></span>最新消息</h2>
@@ -173,6 +290,26 @@ body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 20
 </div>
 
 <script>
+(function(){
+  const saved=localStorage.getItem('theme')||'dark';
+  document.documentElement.setAttribute('data-theme',saved);
+  document.documentElement.setAttribute('data-bs-theme',saved);
+})();
+
+function toggleTheme(){
+  const html=document.documentElement;
+  const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  html.setAttribute('data-bs-theme',next);
+  localStorage.setItem('theme',next);
+  document.getElementById('theme-icon').className=next==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';
+}
+
+function initThemeIcon(){
+  const t=document.documentElement.getAttribute('data-theme')||'dark';
+  document.getElementById('theme-icon').className=t==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';
+}
+
 function fmtDate(s){if(!s)return '';try{return new Date(s).toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});}catch(e){return s.substring(0,10);}}
 
 function toggleSearch(){const o=document.getElementById('search-ov');const on=o.style.display==='flex';o.style.display=on?'none':'flex';if(!on)setTimeout(()=>document.getElementById('si').focus(),50);}
@@ -248,8 +385,114 @@ async function loadExternalNews(){
   }catch(e){document.getElementById('ext-news').innerHTML=`<div style="padding:1rem;text-align:center;color:var(--t3);font-size:.9rem">載入失敗</div><div style="padding:.7rem 1.2rem;text-align:center"><a href="/news-feed" style="font-size:.82rem;color:var(--p);font-weight:600;text-decoration:none">查看全部新聞消息 →</a></div>`;}
 }
 
+function fmtTs(ts){if(!ts)return '';try{return new Date(ts*1000).toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})+'更新';}catch(e){return '';}}
+
+async function loadWaterAlerts(){
+  try{
+    const d=await fetch('/api/water-alerts').then(r=>r.json());
+    const body=document.getElementById('water-body');
+    const badge=document.getElementById('water-badge');
+    const alerts=d.alerts||[];
+    document.getElementById('water-ts').textContent=fmtTs(d.fetched_at);
+    if(!alerts.length){
+      badge.style.background='rgba(52,211,153,.15)';badge.style.color='#34d399';badge.textContent='正常';
+      body.innerHTML='<p style="font-size:.82rem;color:var(--t3);margin:0;text-align:center;padding:.5rem 0">目前桃園市無停水通知</p>';
+      return;
+    }
+    badge.style.background='rgba(248,113,113,.15)';badge.style.color='#f87171';badge.textContent=alerts.length+'則';
+    body.innerHTML=alerts.map(a=>`<div style="padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.05);last-child:border:none">
+      <div style="font-size:.8rem;color:#e2e8f0;line-height:1.5">${a.description}</div>
+      ${a.expires?`<div style="font-size:.7rem;color:var(--t4);margin-top:3px">到期：${a.expires.substring(0,16)}</div>`:''}
+    </div>`).join('');
+  }catch(e){document.getElementById('water-body').innerHTML='<p style="font-size:.8rem;color:var(--t3);margin:0">載入失敗</p>';}
+}
+
+async function loadPowerOutage(){
+  try{
+    const d=await fetch('/api/power-outage').then(r=>r.json());
+    const body=document.getElementById('power-body');
+    const badge=document.getElementById('power-badge');
+    const outages=d.outages||[];
+    document.getElementById('power-ts').textContent=fmtTs(d.fetched_at);
+    if(!outages.length){
+      badge.style.background='rgba(52,211,153,.15)';badge.style.color='#34d399';badge.textContent='正常';
+      body.innerHTML='<p style="font-size:.82rem;color:var(--t3);margin:0;text-align:center;padding:.5rem 0">今日及近期無計畫停電</p>';
+      return;
+    }
+    const label=d.source==='bade'?'八德':'桃園市';
+    badge.style.background='rgba(251,191,36,.12)';badge.style.color='#fbbf24';badge.textContent=label+' '+outages.length+'筆';
+    body.innerHTML=outages.map(o=>`<div style="padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.05)">
+      <div style="font-size:.75rem;color:var(--pl);font-weight:600;margin-bottom:2px">${o.scope}</div>
+      <div style="font-size:.78rem;color:var(--t2)">${o.description}</div>
+      <div style="font-size:.7rem;color:var(--t4);margin-top:2px">${o.time1}${o.time2&&o.time2!=='無'?' ／ '+o.time2:''}</div>
+    </div>`).join('');
+  }catch(e){document.getElementById('power-body').innerHTML='<p style="font-size:.8rem;color:var(--t3);margin:0">載入失敗</p>';}
+}
+
+async function loadGarbageSpots(){
+  try{
+    const d=await fetch('/api/garbage-spots').then(r=>r.json());
+    const body=document.getElementById('garbage-body');
+    const spots=d.spots||[];
+    const bade=spots.find(s=>s.district==='八德')||spots[0];
+    if(!bade){body.innerHTML='<p style="font-size:.8rem;color:var(--t3);margin:0">無資料</p>';return;}
+    body.innerHTML=`
+      <div style="margin-bottom:.8rem">
+        <div style="font-size:.75rem;color:var(--t3);margin-bottom:2px">收受地點</div>
+        <div style="font-size:.88rem;color:var(--t1);font-weight:600">${bade.name}</div>
+        <div style="font-size:.8rem;color:var(--t2);margin-top:2px"><i class="fa-solid fa-location-dot me-1" style="color:var(--t3);font-size:.72rem"></i>${bade.address}</div>
+      </div>
+      <div style="display:flex;gap:.8rem">
+        <div style="flex:1;background:rgba(255,255,255,.03);border-radius:8px;padding:.55rem .7rem">
+          <div style="font-size:.68rem;color:var(--t3);margin-bottom:2px">開放時間</div>
+          <div style="font-size:.8rem;color:var(--t1)">${bade.hours}</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,.03);border-radius:8px;padding:.55rem .7rem">
+          <div style="font-size:.68rem;color:var(--t3);margin-bottom:2px">開放日期</div>
+          <div style="font-size:.8rem;color:var(--t1)">${bade.days}</div>
+        </div>
+      </div>
+      ${spots.length>1?`<div style="margin-top:.8rem"><a href="#" onclick="showAllSpots(event,${JSON.stringify(spots).replace(/'/g,"&#39;")})" style="font-size:.72rem;color:var(--p);text-decoration:none">查看所有 ${spots.length} 個區域 →</a></div>`:''}
+    `;
+  }catch(e){document.getElementById('garbage-body').innerHTML='<p style="font-size:.8rem;color:var(--t3);margin:0">載入失敗</p>';}
+}
+
+function showAllSpots(ev, spots){
+  ev.preventDefault();
+  const rows=spots.map(s=>`<tr><td style="padding:.4rem .6rem;color:#cbd5e1;font-size:.82rem">${s.district}</td><td style="padding:.4rem .6rem;color:var(--t2);font-size:.8rem">${s.name}</td><td style="padding:.4rem .6rem;color:var(--t2);font-size:.8rem">${s.hours}</td><td style="padding:.4rem .6rem;color:var(--t2);font-size:.8rem">${s.days}</td></tr>`).join('');
+  document.getElementById('bm-body').innerHTML=`<div style="max-height:60vh;overflow-y:auto"><table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1px solid rgba(255,255,255,.1)"><th style="padding:.4rem .6rem;color:var(--t3);font-size:.75rem;text-align:left">區域</th><th style="padding:.4rem .6rem;color:var(--t3);font-size:.75rem;text-align:left">地點</th><th style="padding:.4rem .6rem;color:var(--t3);font-size:.75rem;text-align:left">時間</th><th style="padding:.4rem .6rem;color:var(--t3);font-size:.75rem;text-align:left">日期</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  document.querySelector('#bmModal .modal-title').innerHTML='<i class="fa-solid fa-trash-can text-success me-2"></i>各區垃圾收受點';
+  new bootstrap.Modal(document.getElementById('bmModal')).show();
+}
+
+async function loadRealtimePower(){
+  try{
+    const d=await fetch('/api/power-realtime').then(r=>r.json());
+    const body=document.getElementById('realtime-body');
+    const badge=document.getElementById('realtime-badge');
+    const outages=d.outages||[];
+    document.getElementById('realtime-ts').textContent=fmtTs(d.fetched_at);
+    if(!outages.length){
+      badge.style.background='rgba(52,211,153,.15)';badge.style.color='#34d399';badge.textContent='正常';
+      body.innerHTML='<p style="font-size:.82rem;color:var(--t3);margin:0;text-align:center;padding:.5rem 0">桃園市目前無即時停電通報</p>';
+      return;
+    }
+    badge.style.background='rgba(248,113,113,.15)';badge.style.color='#f87171';badge.textContent=outages.length+'件';
+    body.innerHTML=outages.map(o=>`<div style="padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.05)">
+      <div style="font-size:.75rem;color:#f87171;font-weight:600;margin-bottom:2px">${o.area}</div>
+      <div style="font-size:.78rem;color:var(--t2)">${o.reason||'停電中'}</div>
+      <div style="font-size:.7rem;color:var(--t4);margin-top:2px">
+        ${o.count?`${parseInt(o.count).toLocaleString()} 戶`:''}
+        ${o.restore_time?` ・ 預計 ${o.restore_time.replace('T',' ').substring(0,16)} 復電`:''}
+      </div>
+    </div>`).join('');
+  }catch(e){document.getElementById('realtime-body').innerHTML='<p style="font-size:.8rem;color:var(--t3);margin:0">載入失敗</p>';}
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
+  initThemeIcon();
   recordVisit();loadTicker();loadStats();loadNewsPreview();loadExternalNews();
+  loadWaterAlerts();loadPowerOutage();loadGarbageSpots();loadRealtimePower();
 });
 </script>
 <!-- LINE 浮動按鈕 -->

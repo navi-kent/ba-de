@@ -8,12 +8,19 @@
 """
 import os
 import re
+import io
+import csv
 import time
 import uuid
 import hmac
+import zipfile
+import threading
+import warnings
+import xml.etree.ElementTree as ET
 import psycopg2
 import psycopg2.extras
-from datetime import datetime
+import requests
+from datetime import datetime, date
 from functools import wraps
 from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory
@@ -21,6 +28,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+from bs4 import BeautifulSoup
 
 BASE_DIR = Path(__file__).parent.parent
 load_dotenv(BASE_DIR / ".env")
@@ -58,6 +66,23 @@ SOURCE_LABELS = {
     "fb":    "Facebook",
     "gov":   "政府公告",
 }
+
+# ── 輕量 TTL 快取（民生資訊用，不需要 Redis）─────────────────────
+_http_cache: dict = {}
+_http_cache_lock = threading.Lock()
+
+def _cache_get(key: str, ttl: int):
+    with _http_cache_lock:
+        entry = _http_cache.get(key)
+        if entry and time.time() - entry[1] < ttl:
+            return entry[0]
+    return None
+
+def _cache_set(key: str, data):
+    with _http_cache_lock:
+        _http_cache[key] = (data, time.time())
+
+TAOYUAN_KW = ["桃園市","八德區","中壢區","蘆竹區","龜山區","大溪區","楊梅區","龍潭區","平鎮區","大園區","觀音區","復興區","南崁"]
 
 
 # ── 工具函式 ─────────────────────────────────────────────────
@@ -324,7 +349,7 @@ def api_announcement_detail(slug):
 
 # ── 公開 API：訪客計數 ───────────────────────────────────────
 
-VISITOR_BASE = 999  # 顯示數字 = COUNT(*) + VISITOR_BASE，讓計數從 1000 起算
+VISITOR_BASE = 10000  # 顯示數字 = COUNT(*) + VISITOR_BASE，基數 10000
 
 @app.route("/api/visit", methods=["POST"])
 def api_visit():
@@ -553,6 +578,306 @@ def api_media_list():
         return jsonify({"media": [{"name": r["name"], "count": r["cnt"]} for r in rows]})
     finally:
         conn.close()
+
+
+@app.route("/api/gov-news")
+def api_gov_news():
+    """政府官網最新消息列表（gov_news 表）。
+
+    Query params:
+        source:   bade_district（公所）| bade_hro（戶政）| all
+        category: 主分類篩選，"all" 不篩選
+        q:        關鍵字搜尋（標題 LIKE）
+        month:    年月篩選，格式 "YYYY-MM"，"all" 不篩選
+        page:     頁碼，從 1 開始（預設 1）
+        limit:    每頁筆數，上限 200（預設 20）
+    """
+    source   = request.args.get("source", "all")
+    category = request.args.get("category", "all")
+    q        = request.args.get("q", "").strip()
+    month    = request.args.get("month", "all")
+    limit    = min(int(request.args.get("limit", 20)), 200)
+    page     = max(1, int(request.args.get("page", 1)))
+    offset   = (page - 1) * limit
+
+    conn = get_conn()
+    try:
+        where_clauses, params = [], []
+        if source != "all":
+            where_clauses.append("source_site = %s")
+            params.append(source)
+        if category != "all":
+            where_clauses.append("category = %s")
+            params.append(category)
+        if q:
+            where_clauses.append("title LIKE %s")
+            params.append(f"%{q}%")
+        if month != "all":
+            where_clauses.append("TO_CHAR(published_date, 'YYYY-MM') = %s")
+            params.append(month)
+
+        where_sql = ("WHERE " + " AND ".join(where_clauses)) if where_clauses else ""
+
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT COUNT(*) as cnt FROM gov_news {where_sql}", params)
+            count = cur.fetchone()["cnt"]
+
+            cur.execute(
+                f"""SELECT id, source_site, source_name, title, url,
+                           department, category, published_date, scraped_at
+                    FROM gov_news {where_sql}
+                    ORDER BY published_date DESC, scraped_at DESC
+                    LIMIT %s OFFSET %s""",
+                params + [limit, offset],
+            )
+            rows = cur.fetchall()
+
+        SOURCE_SITE_LABELS = {
+            "bade_district": "公所公告",
+            "bade_hro":      "戶政公告",
+        }
+        total_pages = max(1, (count + limit - 1) // limit)
+        return jsonify({
+            "posts": [
+                {
+                    "id":           r["id"],
+                    "source":       r["source_site"],
+                    "source_label": SOURCE_SITE_LABELS.get(r["source_site"], r["source_name"]),
+                    "media":        r["department"] or r["category"] or None,
+                    "title":        r["title"] or "（無標題）",
+                    "content":      "",
+                    "url":          r["url"],
+                    "published_at": r["published_date"].isoformat() if r["published_date"] else None,
+                    "scraped_at":   r["scraped_at"].isoformat() if r["scraped_at"] else None,
+                }
+                for r in rows
+            ],
+            "total":       count,
+            "page":        page,
+            "limit":       limit,
+            "total_pages": total_pages,
+            "has_next":    offset + limit < count,
+        })
+    finally:
+        conn.close()
+
+
+# ── 民生資訊 API ──────────────────────────────────────────────
+
+@app.route("/api/water-alerts")
+def api_water_alerts():
+    """桃園市停水通知：NCDR 民生示警，以 summary 過濾含桃園地名的項目。
+
+    每 30 分鐘更新一次快取；回傳格式：{alerts: [...], fetched_at: float}
+    """
+    cached = _cache_get("water_alerts", 1800)
+    if cached is not None:
+        return jsonify(cached)
+
+    try:
+        resp = requests.get(
+            "https://alerts.ncdr.nat.gov.tw/JSONAtomFeeds.ashx",
+            timeout=10,
+            headers={"User-Agent": "Mozilla/5.0 (Ba-de)"},
+        )
+        entries = resp.json().get("entry", [])
+
+        water_entries = [
+            e for e in entries
+            if e.get("category", {}).get("@term") == "停水"
+        ]
+
+        now = datetime.now()
+
+        def _parse_expires(s: str):
+            try:
+                s = s.replace("上午", "AM").replace("下午", "PM")
+                return datetime.strptime(s, "%Y/%m/%d %p %I:%M:%S")
+            except Exception:
+                return None
+
+        results = []
+        for e in water_entries:
+            summary = e.get("summary", {}).get("#text", "")
+            if not any(kw in summary for kw in TAOYUAN_KW):
+                continue
+            exp_dt = _parse_expires(e.get("expires", ""))
+            if exp_dt and exp_dt < now:
+                continue  # 已過期，略過
+            results.append({
+                "description": summary,
+                "expires":     e.get("expires", ""),
+                "updated":     e.get("updated", ""),
+                "link":        e.get("link", {}).get("@href", ""),
+            })
+
+        payload = {"alerts": results, "fetched_at": time.time()}
+        _cache_set("water_alerts", payload)
+        return jsonify(payload)
+
+    except Exception as ex:
+        return jsonify({"alerts": [], "error": str(ex), "fetched_at": 0}), 200
+
+
+@app.route("/api/power-outage")
+def api_power_outage():
+    """台電桃園計畫停電：下載每日 ZIP → 解析 103.csv（桃園區處）。
+
+    優先顯示 八德區 範圍；若無則顯示全桃園當日起未來 7 天，上限 20 筆。
+    每 4 小時更新一次快取（台電一天最多更新 2–3 次）。
+    SSL 憑證缺少 Subject Key Identifier，使用 verify=False。
+    """
+    cached = _cache_get("power_outage", 14400)
+    if cached is not None:
+        return jsonify(cached)
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            resp = requests.get(
+                "https://service.taipower.com.tw/data/opendata/apply/file/d077004/001.zip",
+                timeout=30,
+                headers={"User-Agent": "Mozilla/5.0 (Ba-de)"},
+                verify=False,
+            )
+
+        today = date.today()
+        cutoff = today.isoformat()
+
+        def parse_start_date(time_str: str):
+            try:
+                return datetime.strptime(time_str.split(" ")[0], "%Y/%m/%d").date()
+            except Exception:
+                return None
+
+        with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+            raw = zf.read("103.csv").decode("utf-8-sig", errors="replace")
+
+        reader = csv.DictReader(io.StringIO(raw))
+        all_rows = list(reader)
+
+        upcoming = [
+            r for r in all_rows
+            if (d := parse_start_date(r.get("第一次停電時間", ""))) and d >= today
+        ]
+
+        bade = [r for r in upcoming if "八德" in r.get("停電範圍", "")]
+        rows = bade if bade else upcoming
+
+        results = [
+            {
+                "scope":       r.get("停電範圍", ""),
+                "description": r.get("工作概述", ""),
+                "time1":       r.get("第一次停電時間", ""),
+                "time2":       r.get("第二次停電時間", ""),
+                "phone":       "1911",
+            }
+            for r in rows[:20]
+        ]
+
+        payload = {"outages": results, "fetched_at": time.time(), "source": "bade" if bade else "taoyuan"}
+        _cache_set("power_outage", payload)
+        return jsonify(payload)
+
+    except Exception as ex:
+        return jsonify({"outages": [], "error": str(ex), "fetched_at": 0}), 200
+
+
+@app.route("/api/garbage-spots")
+def api_garbage_spots():
+    """八德區垃圾定點收受點：爬取桃園市環境管理處頁面。
+
+    此資料幾乎不變動，快取 24 小時。
+    SSL 憑證同樣缺少 Subject Key Identifier，使用 verify=False。
+    """
+    cached = _cache_get("garbage_spots", 86400)
+    if cached is not None:
+        return jsonify(cached)
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            resp = requests.get(
+                "https://tyoem.tycg.gov.tw/News_Content.aspx?n=21967&s=1594431",
+                timeout=15,
+                headers={"User-Agent": "Mozilla/5.0 (Ba-de)"},
+                verify=False,
+            )
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        table = soup.find("table")
+        spots = []
+
+        if table:
+            rows = table.find_all("tr")
+            for row in rows[1:]:  # skip header
+                cells = [c.get_text(strip=True) for c in row.find_all(["td", "th"])]
+                if len(cells) >= 5:
+                    spots.append({
+                        "no":       cells[0],
+                        "district": cells[1],
+                        "name":     cells[2],
+                        "address":  cells[3],
+                        "hours":    cells[4],
+                        "days":     cells[5] if len(cells) > 5 else "",
+                    })
+
+        payload = {"spots": spots, "fetched_at": time.time()}
+        _cache_set("garbage_spots", payload)
+        return jsonify(payload)
+
+    except Exception as ex:
+        return jsonify({"spots": [], "error": str(ex), "fetched_at": 0}), 200
+
+
+@app.route("/api/power-realtime")
+def api_power_realtime():
+    """台電即時停電：爬取 outageweb SSR 頁面（data-value 屬性），篩選桃園市。
+
+    頁面每 5 分鐘更新一次，快取設 5 分鐘。
+    SSL 憑證問題同上，verify=False。
+    """
+    cached = _cache_get("power_realtime", 300)
+    if cached is not None:
+        return jsonify(cached)
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            resp = requests.get(
+                "https://service.taipower.com.tw/psvs1/outageweb/",
+                timeout=15,
+                headers={"User-Agent": "Mozilla/5.0 (Ba-de)"},
+                verify=False,
+            )
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        outages = []
+
+        for tr in soup.select("tbody tr"):
+            row = {
+                td["data-key"]: td.get("data-value", td.get_text(strip=True))
+                for td in tr.find_all("td", attrs={"data-key": True})
+            }
+            if not row:
+                continue
+            area = row.get("OutageRange", "")
+            if "桃園" not in area:
+                continue
+            outages.append({
+                "area":          area,
+                "reason":        row.get("Reason", ""),
+                "occur_time":    row.get("OccurTime", ""),
+                "restore_time":  row.get("PreBackTime", ""),
+                "count":         row.get("NowCount", "0"),
+            })
+
+        payload = {"outages": outages, "fetched_at": time.time()}
+        _cache_set("power_realtime", payload)
+        return jsonify(payload)
+
+    except Exception as ex:
+        return jsonify({"outages": [], "error": str(ex), "fetched_at": 0}), 200
 
 
 # ── 後台 API：最新消息 CRUD ───────────────────────────────────

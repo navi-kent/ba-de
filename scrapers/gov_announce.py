@@ -23,7 +23,7 @@ HEADERS      = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) A
 # OpenData XML 來源，SN 參數是各單位的資料集識別碼
 GOV_SOURCES  = [
     {"name": "桃園市政府", "url": "https://www.tycg.gov.tw/OpenData.aspx?SN=50C7BB8497F3C8C2"},
-    {"name": "八德區公所", "url": "https://www.bade.tycg.gov.tw/OpenData.aspx?SN=26647240B7BF2853"},
+    # 八德區公所已由 gov_news_scraper.py 負責（HTML 列表，資料更完整），此處移除避免重複
 ]
 
 CONFIG   = load_search_config()
