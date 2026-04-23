@@ -15,7 +15,6 @@
 - [API 端點](#api-端點)
 - [爬蟲說明](#爬蟲說明)
 - [後台管理](#後台管理)
-- [Email 通知設定](#email-通知設定)
 - [自動化排程](#自動化排程)
 - [日常維運指令](#日常維運指令)
 - [部署到 Hetzner](#部署到-hetzner)
@@ -208,15 +207,9 @@ PG_USER=bade_user
 PG_PASSWORD=your_password
 PG_DATABASE=bade
 
-# 後台管理 Token（請設定為安全的隨機字串）
-ADMIN_TOKEN=your_admin_token
-
-# 許願池 Email 通知（選填）
-WISH_RECIPIENT_EMAIL=
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=
-SMTP_PASSWORD=
+# 後台管理帳號（帳號 + 密碼雙重驗證）
+ADMIN_USER=admin@example.com
+ADMIN_TOKEN=your_admin_password
 ```
 
 ### `config/search_config.yaml`
@@ -333,12 +326,13 @@ news_keywords:
 
 | 路由 | 頁面 | 說明 |
 |------|------|------|
-| `/` | 首頁 | 跑馬燈（近 5 天標題）、統計、最新消息 preview、訪客計數器 |
+| `/` | 首頁 | 跑馬燈（近 5 天標題，無標籤）、統計、最新消息 preview、訪客計數器 |
 | `/news` | 最新消息列表 | 手動管理的公告，依分類篩選，分頁 |
 | `/news/<slug>` | 最新消息內頁 | 完整文章，含 SEO meta、OG tags |
 | `/news-feed` | 新聞消息 | 爬蟲資料，來源/月份/關鍵字篩選，數字分頁 |
-| `/admin` | 後台管理 | Token 登入後管理最新消息（新增/編輯/刪除/上傳圖片） |
+| `/admin` | 後台管理 | 帳號＋密碼登入；管理最新消息（CRUD）與許願池留言 |
 | `/wish` | 許願池 | 居民意見回饋表單 |
+| 全頁面 | Navbar | 品牌名稱右上角顯示版號徽章（`v1.0`） |
 
 ---
 
@@ -356,7 +350,7 @@ news_keywords:
 | `/api/visit` | POST | 訪客計數（每次 +1，回傳當前總數） |
 | `/api/wish` | POST | 送出許願（`name/email/line_id/phone/category/content`） |
 
-### 後台 API（需 Header：`X-Admin-Token: <token>`）
+### 後台 API（需 Headers：`X-Admin-User` + `X-Admin-Token`）
 
 | 端點 | 方法 | 說明 |
 |------|------|------|
@@ -365,6 +359,8 @@ news_keywords:
 | `/api/admin/announcements/<id>` | GET | 取得單筆 |
 | `/api/admin/announcements/<id>` | PUT | 更新 |
 | `/api/admin/announcements/<id>` | DELETE | 刪除 |
+| `/api/admin/wishes` | GET | 許願池留言列表 |
+| `/api/admin/wishes/<id>` | DELETE | 刪除單筆許願留言 |
 | `/api/admin/upload` | POST | 上傳圖片（回傳 `/uploads/<filename>`） |
 
 ---
@@ -394,33 +390,25 @@ news_keywords:
 
 **網址：** `http://127.0.0.1:5001/admin`
 
-**登入：** 輸入 `.env` 中的 `ADMIN_TOKEN`
+**登入：** 帳號（`ADMIN_USER`）+ 密碼（`ADMIN_TOKEN`）雙欄驗證，後端同時以 `hmac.compare_digest()` 比對兩者。
+
+**URL Hash 路由：** 切換 view 時 URL 會更新（`#list` / `#wishes` / `#edit` / `#edit/<id>`），refresh 會停留在同一頁。
 
 **功能：**
 
 | 功能 | 說明 |
 |------|------|
+| 最新消息列表 | 所有消息（含草稿），可編輯/刪除/預覽 |
 | 新增/編輯消息 | 完整 Quill 富文字編輯器（含圖片插入） |
 | 標題 & Slug | Slug 自動從標題生成，可手動修改 |
 | 類別 | 自由輸入或點擊快速預設（公告/活動/工程/交通/民生） |
 | 封面圖片 | 拖曳或點擊上傳，存至 `frontend/uploads/` |
 | 摘要 | 顯示於列表頁及 SEO meta description |
-| Meta Description | 獨立 SEO 描述欄，顯示字數提示（建議 120-160 字元） |
 | 發佈設定 | 草稿 / 發佈切換 + 自訂發佈時間 |
-| 預覽 | 可點擊眼睛圖示在新分頁查看前台效果 |
+| 許願池留言 | 查看所有前台留言（分欄顯示 Email / LINE / 電話），點列進入詳情，可刪除 |
 
 ---
 
-## Email 通知設定
-
-許願池收到新留言時，可自動寄送 Email 通知。
-
-**Gmail 應用程式密碼取得方式：**
-1. Google 帳號 → 安全性 → 兩步驟驗證（需先開啟）
-2. 兩步驟驗證頁面底部 → 應用程式密碼 → 建立
-3. 複製 16 碼密碼填入 `.env` 的 `SMTP_PASSWORD`
-
----
 
 ## 自動化排程
 

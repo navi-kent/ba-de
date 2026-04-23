@@ -149,12 +149,13 @@ textarea.form-control{min-height:90px;resize:vertical}
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo"><i class="fa-solid fa-tower-broadcast me-2" style="-webkit-text-fill-color:#60a5fa;font-size:1.4rem"></i>八德資源網</div>
-    <div style="font-size:.85rem;color:var(--t3);margin-bottom:1.8rem">後台管理系統 · 請輸入管理員 Token</div>
-    <label class="f-label" style="margin-bottom:.35rem">Admin Token</label>
+    <div style="font-size:.85rem;color:var(--t3);margin-bottom:1.8rem">後台管理系統 · 請輸入帳號與密碼</div>
+    <label class="f-label" style="margin-bottom:.35rem">帳號</label>
+    <input id="login-user" class="login-input" type="email" placeholder="admin@example.com" autocomplete="username" style="margin-bottom:.75rem">
+    <label class="f-label" style="margin-bottom:.35rem">密碼</label>
     <input id="login-token" class="login-input" type="password" placeholder="••••••••••••••••" autocomplete="current-password">
-    <div id="login-error" style="display:none;font-size:.78rem;color:var(--ro);margin-top:6px"><i class="fa-solid fa-circle-exclamation me-1"></i>Token 錯誤，請重新輸入</div>
+    <div id="login-error" style="display:none;font-size:.78rem;color:var(--ro);margin-top:6px"><i class="fa-solid fa-circle-exclamation me-1"></i>帳號或密碼錯誤，請重新輸入</div>
     <button class="login-btn" onclick="doLogin()"><i class="fa-solid fa-right-to-bracket me-2"></i>登入後台</button>
-    <div style="margin-top:1.2rem;text-align:center;font-size:.76rem;color:var(--t4)">Token 設定於 .env 檔案的 ADMIN_TOKEN 欄位</div>
   </div>
 </div>
 
@@ -163,14 +164,16 @@ textarea.form-control{min-height:90px;resize:vertical}
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <div class="sb-brand"><i class="fa-solid fa-tower-broadcast me-2" style="-webkit-text-fill-color:#60a5fa;font-size:1rem"></i>後台管理</div>
+    <div class="sb-brand"><i class="fa-solid fa-tower-broadcast me-2" style="-webkit-text-fill-color:#60a5fa;font-size:1rem"></i>後台管理<span style="font-size:.58rem;font-weight:400;-webkit-text-fill-color:rgba(148,163,184,.4);color:rgba(148,163,184,.4);vertical-align:super;margin-left:4px;letter-spacing:.3px">v1.0</span></div>
     <div class="sb-nav">
       <div class="sb-label">內容管理</div>
       <div class="sb-item active" id="nav-list" onclick="showView('list')"><i class="fa-solid fa-list fa-fw"></i>最新消息列表</div>
       <div class="sb-item" id="nav-create" onclick="showView('edit', null)"><i class="fa-solid fa-plus fa-fw"></i>新增消息</div>
+      <div class="sb-label" style="margin-top:8px">留言管理</div>
+      <div class="sb-item" id="nav-wishes" onclick="showView('wishes')"><i class="fa-solid fa-star fa-fw"></i>許願池留言</div>
       <div class="sb-label" style="margin-top:8px">外部連結</div>
-      <a href="/" target="_blank" class="sb-item"><i class="fa-solid fa-arrow-up-right-from-square fa-fw"></i>查看前台</a>
-      <a href="/news" target="_blank" class="sb-item"><i class="fa-solid fa-newspaper fa-fw"></i>最新消息頁</a>
+      <a href="/" class="sb-item"><i class="fa-solid fa-arrow-up-right-from-square fa-fw"></i>查看前台</a>
+      <a href="/news" class="sb-item"><i class="fa-solid fa-newspaper fa-fw"></i>最新消息頁</a>
     </div>
     <div class="sb-foot">
       <div style="font-size:.72rem;color:var(--t4);padding:.2rem .75rem .6rem;"><span id="sidebar-token-hint"></span></div>
@@ -241,6 +244,68 @@ textarea.form-control{min-height:90px;resize:vertical}
           <div style="padding:.9rem 1.2rem;border-top:1px solid var(--bd)">
             <div class="pagination-bar" id="list-pagination"></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 許願池 View ── -->
+    <div id="view-wishes" style="display:none">
+      <div class="topbar">
+        <span class="topbar-title"><i class="fa-solid fa-star" style="color:var(--pl);font-size:1rem"></i>許願池留言</span>
+        <span style="font-size:.82rem;color:var(--t3)" id="wish-count"></span>
+      </div>
+      <div class="content-area">
+        <div class="tbl-wrap">
+          <div id="wish-table-wrap">
+            <table class="post-table">
+              <thead>
+                <tr>
+                  <th style="width:130px">時間</th>
+                  <th style="width:90px">類別</th>
+                  <th style="width:90px">暱稱</th>
+                  <th style="width:160px">Email</th>
+                  <th style="width:110px">LINE</th>
+                  <th style="width:110px">電話</th>
+                  <th>內容</th>
+                  <th style="width:70px">操作</th>
+                </tr>
+              </thead>
+              <tbody id="wish-tbody">
+                <tr><td colspan="8" style="text-align:center;color:var(--t3);padding:2rem">載入中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:.9rem 1.2rem;border-top:1px solid var(--bd)">
+            <div class="pagination-bar" id="wish-pagination"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 許願池 Modal ── -->
+    <div id="wish-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);align-items:center;justify-content:center" onclick="if(event.target===this)closeWishModal()">
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;width:100%;max-width:560px;margin:1rem;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+        <div style="padding:1.1rem 1.4rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-weight:700;font-size:.95rem;color:var(--t1)"><i class="fa-solid fa-star me-2" style="color:var(--pl)"></i>留言詳情</span>
+          <button onclick="closeWishModal()" style="background:transparent;border:none;color:var(--t3);cursor:pointer;font-size:1.1rem;line-height:1;padding:2px 6px"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="padding:1.4rem;display:flex;flex-direction:column;gap:.9rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+            <div><div style="font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:.25rem">暱稱</div><div id="md-name" style="font-size:.9rem;color:var(--t1)">—</div></div>
+            <div><div style="font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:.25rem">類別</div><div id="md-category"></div></div>
+            <div><div style="font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:.25rem">Email</div><div id="md-email" style="font-size:.88rem;color:var(--pl);word-break:break-all">—</div></div>
+            <div><div style="font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:.25rem">LINE ID</div><div id="md-line" style="font-size:.88rem;color:var(--t2)">—</div></div>
+            <div><div style="font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:.25rem">電話</div><div id="md-phone" style="font-size:.88rem;color:var(--t2)">—</div></div>
+            <div><div style="font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:.25rem">時間</div><div id="md-time" style="font-size:.82rem;color:var(--t3)">—</div></div>
+          </div>
+          <div>
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:.4rem">內容</div>
+            <div id="md-content" style="background:rgba(0,0,0,.25);border:1px solid var(--bd);border-radius:8px;padding:.85rem 1rem;font-size:.9rem;color:var(--t1);line-height:1.8;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto"></div>
+          </div>
+        </div>
+        <div style="padding:.9rem 1.4rem;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:.5rem">
+          <button id="md-del-btn" class="act-btn del" style="padding:.35rem .8rem;font-size:.82rem"><i class="fa-solid fa-trash me-1"></i>刪除</button>
+          <button onclick="closeWishModal()" class="btn-secondary" style="padding:.35rem .9rem;font-size:.82rem">關閉</button>
         </div>
       </div>
     </div>
@@ -357,20 +422,22 @@ textarea.form-control{min-height:90px;resize:vertical}
 
 <script>
 // ── Token 管理 ──────────────────────────────────────────────
-let adminToken = '';
+let adminUser = '', adminToken = '';
 
 function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
     const t = document.getElementById('login-token').value.trim();
-    if (!t) return;
-    adminToken = t;
-    fetch('/api/admin/announcements?page=1', { headers: {'X-Admin-Token': t} })
+    if (!u || !t) return;
+    adminUser = u; adminToken = t;
+    fetch('/api/admin/announcements?page=1', { headers: {'X-Admin-User': u, 'X-Admin-Token': t} })
         .then(r => {
             if (r.ok) {
+                localStorage.setItem('bade_admin_user',  u);
                 localStorage.setItem('bade_admin_token', t);
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-app').style.display = 'block';
-                document.getElementById('sidebar-token-hint').textContent = '已登入';
-                showView('list');
+                document.getElementById('sidebar-token-hint').textContent = u;
+                restoreView();
             } else {
                 document.getElementById('login-error').style.display = 'block';
             }
@@ -378,15 +445,17 @@ function doLogin() {
 }
 
 function doLogout() {
+    localStorage.removeItem('bade_admin_user');
     localStorage.removeItem('bade_admin_token');
-    adminToken = '';
+    adminUser = ''; adminToken = '';
     document.getElementById('admin-app').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-user').value = '';
     document.getElementById('login-token').value = '';
 }
 
 function authHeaders(extra) {
-    return Object.assign({ 'X-Admin-Token': adminToken, 'Content-Type': 'application/json' }, extra || {});
+    return Object.assign({ 'X-Admin-User': adminUser, 'X-Admin-Token': adminToken, 'Content-Type': 'application/json' }, extra || {});
 }
 
 // ── Toast ─────────────────────────────────────────────────────
@@ -401,13 +470,34 @@ function toast(msg, type = 'success') {
 
 // ── Views ─────────────────────────────────────────────────────
 function showView(view, id) {
-    document.getElementById('view-list').style.display = view === 'list' ? '' : 'none';
-    document.getElementById('view-edit').style.display = view === 'edit' ? '' : 'none';
-    document.getElementById('nav-list').classList.toggle('active', view === 'list');
+    document.getElementById('view-list').style.display   = view === 'list'   ? '' : 'none';
+    document.getElementById('view-edit').style.display   = view === 'edit'   ? '' : 'none';
+    document.getElementById('view-wishes').style.display = view === 'wishes' ? '' : 'none';
+    document.getElementById('nav-list').classList.toggle('active',   view === 'list');
     document.getElementById('nav-create').classList.toggle('active', view === 'edit' && !id);
+    document.getElementById('nav-wishes').classList.toggle('active', view === 'wishes');
 
-    if (view === 'list') { loadList(); loadAdminStats(); }
-    if (view === 'edit') { loadEditForm(id); }
+    // 更新 URL hash，讓 refresh 停留在同一個 view
+    const hash = view === 'edit' ? (id ? `#edit/${id}` : '#edit') : `#${view}`;
+    if (location.hash !== hash) history.replaceState(null, '', hash);
+
+    if (view === 'list')   { loadList(); loadAdminStats(); }
+    if (view === 'edit')   { loadEditForm(id); }
+    if (view === 'wishes') { loadWishes(); }
+}
+
+function restoreView() {
+    const hash = location.hash;
+    if (hash.startsWith('#edit/')) {
+        const id = parseInt(hash.split('/')[1], 10);
+        showView('edit', id || null);
+    } else if (hash === '#edit') {
+        showView('edit', null);
+    } else if (hash === '#wishes') {
+        showView('wishes');
+    } else {
+        showView('list');
+    }
 }
 
 // ── Admin Stats ───────────────────────────────────────────────
@@ -421,8 +511,8 @@ async function loadAdminStats() {
             const published = (ann.items || []).filter ? ann.total : 0;
             document.getElementById('stat-published').textContent = ann.total || 0;
         }
-        if (stats.crawler_total !== undefined) {
-            document.getElementById('stat-crawler').textContent = stats.crawler_total.toLocaleString();
+        if (stats.total !== undefined) {
+            document.getElementById('stat-crawler').textContent = stats.total.toLocaleString();
         }
         if (stats.wish_total !== undefined) {
             document.getElementById('stat-wishes').textContent = stats.wish_total;
@@ -652,6 +742,92 @@ async function saveAnnouncement() {
     }
 }
 
+// ── 許願池列表 ────────────────────────────────────────────────
+let wishPage = 1, wishTotalPages = 1;
+let wishCache = [];
+
+async function loadWishes() {
+    const tbody = document.getElementById('wish-tbody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--t3);padding:2rem">載入中...</td></tr>';
+    try {
+        const d = await fetch(`/api/admin/wishes?page=${wishPage}`, { headers: authHeaders() }).then(r => r.json());
+        wishTotalPages = d.total_pages || 1;
+        wishCache = d.items || [];
+        document.getElementById('wish-count').textContent = `共 ${d.total} 筆`;
+
+        if (!wishCache.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--t3);padding:2rem">目前沒有留言</td></tr>';
+        } else {
+            tbody.innerHTML = wishCache.map(w => {
+                const time = w.created_at ? w.created_at.substring(0,16).replace('T',' ') : '—';
+                const name = w.name || '<span style="color:var(--t4)">（未填）</span>';
+                const contentShort = (w.content || '').substring(0, 40) + ((w.content||'').length > 40 ? '…' : '');
+                return `<tr style="cursor:pointer" onclick="showWishModal(${w.id})">
+                    <td style="font-size:.8rem;color:var(--t3);white-space:nowrap">${time}</td>
+                    <td><span class="cat-badge">${w.category||'—'}</span></td>
+                    <td style="font-size:.85rem">${name}</td>
+                    <td style="font-size:.82rem;color:var(--t2);word-break:break-all">${w.email||'<span style="color:var(--t4)">—</span>'}</td>
+                    <td style="font-size:.82rem;color:var(--t2)">${w.line_id||'<span style="color:var(--t4)">—</span>'}</td>
+                    <td style="font-size:.82rem;color:var(--t2)">${w.phone||'<span style="color:var(--t4)">—</span>'}</td>
+                    <td style="font-size:.85rem;color:var(--t3)">${contentShort}</td>
+                    <td onclick="event.stopPropagation()">
+                        <button class="act-btn del" onclick="deleteWish(${w.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+        renderWishPagination();
+    } catch(e) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--ro);padding:2rem">載入失敗</td></tr>';
+    }
+}
+
+function showWishModal(id) {
+    const w = wishCache.find(x => x.id === id);
+    if (!w) return;
+    document.getElementById('md-name').textContent     = w.name || '（未填）';
+    document.getElementById('md-email').textContent    = w.email || '—';
+    document.getElementById('md-line').textContent     = w.line_id || '—';
+    document.getElementById('md-phone').textContent    = w.phone || '—';
+    document.getElementById('md-time').textContent     = w.created_at ? w.created_at.substring(0,16).replace('T',' ') : '—';
+    document.getElementById('md-content').textContent  = w.content || '';
+    document.getElementById('md-category').innerHTML   = `<span class="cat-badge">${w.category||'—'}</span>`;
+    document.getElementById('md-del-btn').onclick      = () => deleteWish(w.id, true);
+    document.getElementById('wish-modal').style.display = 'flex';
+}
+
+function closeWishModal() {
+    document.getElementById('wish-modal').style.display = 'none';
+}
+
+function renderWishPagination() {
+    const pg = document.getElementById('wish-pagination');
+    if (wishTotalPages <= 1) { pg.innerHTML = ''; return; }
+    let html = `<button class="page-btn" onclick="wishGoPage(${wishPage-1})" ${wishPage===1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>`;
+    for (let i=1; i<=wishTotalPages; i++) html += `<button class="page-btn ${i===wishPage?'active':''}" onclick="wishGoPage(${i})">${i}</button>`;
+    html += `<button class="page-btn" onclick="wishGoPage(${wishPage+1})" ${wishPage===wishTotalPages?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>`;
+    pg.innerHTML = html;
+}
+
+function wishGoPage(p) {
+    if (p < 1 || p > wishTotalPages) return;
+    wishPage = p;
+    loadWishes();
+}
+
+async function deleteWish(id, fromModal = false) {
+    if (!confirm('確定要刪除這筆留言？此操作無法復原。')) return;
+    try {
+        const r = await fetch(`/api/admin/wishes/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const d = await r.json();
+        if (d.ok) {
+            toast('已刪除');
+            if (fromModal) closeWishModal();
+            loadWishes();
+        } else toast('刪除失敗', 'error');
+    } catch(e) { toast('刪除失敗', 'error'); }
+}
+
 // ── Slug 工具 ─────────────────────────────────────────────────
 function autoSlug(title) {
     if (document.getElementById('edit-id').value) return;
@@ -729,12 +905,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (files[0]) uploadCoverImage({ files });
     });
 
-    const saved = localStorage.getItem('bade_admin_token');
-    if (saved) {
-        adminToken = saved;
-        document.getElementById('login-token').value = saved;
+    const savedUser  = localStorage.getItem('bade_admin_user');
+    const savedToken = localStorage.getItem('bade_admin_token');
+    if (savedUser && savedToken) {
+        document.getElementById('login-user').value  = savedUser;
+        document.getElementById('login-token').value = savedToken;
         doLogin();
     }
+
+    window.addEventListener('hashchange', () => {
+        if (document.getElementById('admin-app').style.display !== 'none') restoreView();
+    });
 });
 
 function updateMetaCount() {
@@ -749,6 +930,7 @@ function toLocalDatetimeStr(d) {
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+document.getElementById('login-user').addEventListener('keydown',  e => { if (e.key === 'Enter') document.getElementById('login-token').focus(); });
 document.getElementById('login-token').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 </script>
 </body>
