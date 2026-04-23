@@ -291,7 +291,7 @@ news_keywords:
 |------|------|
 | `visited_at` | 訪問時間 |
 
-> 每次訪問首頁即插入一筆。顯示數字 = `COUNT(*) + 999`（從 1000 起算）。
+> 每次訪問首頁即插入一筆。顯示數字 = `COUNT(*) + 10000`（從 10000 起算）。
 
 ### `wishes`（許願池留言）
 
@@ -386,6 +386,12 @@ news_keywords:
 | `/api/ticker` | GET | 跑馬燈資料（近 5 天標題，去重後最多 20 筆） |
 | `/api/announcements` | GET | 最新消息列表（`category/page/limit`） |
 | `/api/announcements/<slug>` | GET | 最新消息內頁 |
+| `/api/gov-news` | GET | 政府公告列表（`source/category/q/month/page/limit`） |
+| `/api/media-list` | GET | 新聞媒體平台清單（依文章數排序） |
+| `/api/water-alerts` | GET | 桃園市停水通知（NCDR，快取 30 分鐘） |
+| `/api/power-outage` | GET | 計畫停電（台電 ZIP，快取 4 小時） |
+| `/api/power-realtime` | GET | 即時停電（台電 SSR，快取 5 分鐘） |
+| `/api/garbage-spots` | GET | 八德區垃圾定點收受點（桃園環保處，快取 24 小時） |
 | `/api/visit` | POST | 訪客計數（每次 +1，回傳當前總數） |
 | `/api/wish` | POST | 送出許願（`name/email/line_id/phone/category/content`） |
 
